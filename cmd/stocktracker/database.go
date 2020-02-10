@@ -10,7 +10,7 @@ import (
 
 // InitializeDatabase opens SQLite DB and migrates tables
 func InitializeDatabase() *gorm.DB {
-	db, err := gorm.Open("sqlite3", "stock-tracker.db")
+	db, err := gorm.Open("sqlite3", "stocktracker.db")
 
 	if err != nil {
 		log.Fatal(err)
