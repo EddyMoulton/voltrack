@@ -4,7 +4,7 @@
 GET {{base_url}}
 
 ### Post transaction
-POST {{base_url}}/stocks/transaction
+POST {{base_url}}/stocks/transactions
 content-type: application/json
 
 {
@@ -12,9 +12,9 @@ content-type: application/json
 	"date" : "2020-02-08T22:08:00Z",
 	"cost" : 19500,
 	"fee" : 100000,
-	"stockCode" : "TS",
-    "quantity" : 1102
+	"stockCode" : "AA1",
+    "quantity" : 1
 }
 
 ### Get Transactions
-GET {{base_url}}/stocks/transaction
+GET {{base_url}}/stocks/transactions

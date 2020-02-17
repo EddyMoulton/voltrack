@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/models"
+	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/transactions"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
@@ -17,7 +17,7 @@ func InitializeDatabase() *gorm.DB {
 		log.Fatal("Could not connect database")
 	}
 
-	db.AutoMigrate(&models.StockTransaction{}, &models.Transaction{})
+	db.AutoMigrate(&transactions.StockTransaction{}, &transactions.Transaction{})
 
 	return db
 }

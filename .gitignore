@@ -16,4 +16,5 @@
 
 # Custom
 stocktracker
+!stocktracker/
 stocktracker.db

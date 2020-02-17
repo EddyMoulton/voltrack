@@ -8,6 +8,7 @@ require (
 	github.com/gin-gonic/contrib v0.0.0-20191209060500-d6e26eeaa607
 	github.com/gin-gonic/gin v1.5.0
 	github.com/githubnemo/CompileDaemon v1.0.0 // indirect
+	github.com/google/wire v0.4.0
 	github.com/howeyc/fsnotify v0.9.0 // indirect
 	github.com/jinzhu/gorm v1.9.12
 	github.com/mattn/go-isatty v0.0.12 // indirect
