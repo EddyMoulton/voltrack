@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 
+	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/logger"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -14,7 +15,9 @@ func main() {
 	db = InitializeDatabase()
 	defer db.Close()
 
-	transactionsAPI := InitTransactionAPI(db)
+	logger := logger.Logger{}
+
+	transactionsAPI := InitTransactionAPI(db, &logger)
 
 	router := gin.Default()
 

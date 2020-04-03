@@ -6,6 +6,8 @@
 package main
 
 import (
+	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/logger"
+	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/stocks"
 	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/transactions"
 	"github.com/jinzhu/gorm"
 )
@@ -16,9 +18,11 @@ import (
 
 // Injectors from wire.go:
 
-func InitTransactionAPI(db2 *gorm.DB) transactions.TransactionAPI {
-	transactionRepository := transactions.ProvideTransactionRepository(db2)
-	transactionService := transactions.ProvideTransactionService(transactionRepository)
+func InitTransactionAPI(db2 *gorm.DB, logger2 *logger.Logger) transactions.TransactionAPI {
+	transactionRepository := transactions.ProvideTransactionRepository(db2, logger2)
+	stocksRepository := stocks.ProvideStocksRepository(db2)
+	stocksService := stocks.ProvideStocksService(stocksRepository)
+	transactionService := transactions.ProvideTransactionService(transactionRepository, stocksService)
 	transactionAPI := transactions.ProvideTransactionAPI(transactionService)
 	return transactionAPI
 }
