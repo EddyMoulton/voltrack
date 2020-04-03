@@ -9,11 +9,12 @@ import (
 
 const url = "https://www.asx.com.au/asx/1/share/"
 
-func getStockPrice(stockCode string) AsxResult {
+func getStockPrice(stockCode string) (AsxResult, error) {
 	resp, err := http.Get(url + stockCode + "/")
 
 	if err != nil {
 		fmt.Printf("ERROR: %v\n", err)
+		return AsxResult{}, err
 	}
 
 	defer resp.Body.Close()
@@ -22,6 +23,7 @@ func getStockPrice(stockCode string) AsxResult {
 		bodyBytes, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Printf("ERROR: %v\n", err)
+			return AsxResult{}, err
 		}
 		bodyString := string(bodyBytes)
 
@@ -29,10 +31,10 @@ func getStockPrice(stockCode string) AsxResult {
 		json.Unmarshal([]byte(bodyString), &result)
 		fmt.Println(result.LastPrice)
 
-		return result
+		return result, nil
 	}
 
-	return AsxResult{}
+	return AsxResult{}, fmt.Errorf("Failed to get AsxResults: %s", resp.Status)
 }
 
 // AsxResult is a object for passing returned data from Asx Stock Queries

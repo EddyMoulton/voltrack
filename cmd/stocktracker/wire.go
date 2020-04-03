@@ -10,7 +10,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-func InitTransactionAPI(db *gorm.DB, logger *logger.Logger) transactions.API {
+func InitTransactionsAPI(db *gorm.DB, logger *logger.Logger) transactions.API {
 	wire.Build(transactions.ProvideTransactionsRepository,
 		transactions.ProvideTransactionsService,
 		transactions.ProvideTransactionsAPI,
@@ -18,4 +18,12 @@ func InitTransactionAPI(db *gorm.DB, logger *logger.Logger) transactions.API {
 		stocks.ProvideStocksService)
 
 	return transactions.API{}
+}
+
+func InitStocksAPI(db *gorm.DB, logger *logger.Logger) stocks.API {
+	wire.Build(stocks.ProvideStocksRepository,
+		stocks.ProvideStocksService,
+		stocks.ProvideStocksAPI)
+
+	return stocks.API{}
 }

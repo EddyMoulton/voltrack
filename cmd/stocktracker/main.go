@@ -17,7 +17,8 @@ func main() {
 
 	logger := logger.Logger{}
 
-	transactionsAPI := InitTransactionAPI(db, &logger)
+	transactionsAPI := InitTransactionsAPI(db, &logger)
+	stocksAPI := InitStocksAPI(db, &logger)
 
 	router := gin.Default()
 
@@ -33,6 +34,7 @@ func main() {
 	}
 
 	api.GET("/stocks/transactions", transactionsAPI.GetAll)
+	api.GET("/stocks", stocksAPI.GetAll)
 
 	router.Run(":3000")
 }

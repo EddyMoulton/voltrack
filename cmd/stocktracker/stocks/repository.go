@@ -18,6 +18,7 @@ func ProvideStocksRepository(db *gorm.DB, logger *logger.Logger) Repository {
 
 func (r *Repository) getAll() ([]Stock, error) {
 	allStocks := []Stock{}
+
 	if err := r.db.Find(&allStocks).Error; err != nil {
 		r.logger.Log(err.Error())
 		return allStocks, err
