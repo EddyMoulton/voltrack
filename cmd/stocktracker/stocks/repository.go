@@ -1,27 +1,46 @@
 package stocks
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/logger"
+	"github.com/jinzhu/gorm"
+)
 
-type StocksRepository struct {
-	db *gorm.DB
+// Repository is a set of methods for handling stocks database access
+type Repository struct {
+	db     *gorm.DB
+	logger *logger.Logger
 }
 
-func ProvideStocksRepository(db *gorm.DB) StocksRepository {
-	return StocksRepository{db}
+// ProvideStocksRepository provides a new instance for wire
+func ProvideStocksRepository(db *gorm.DB, logger *logger.Logger) Repository {
+	return Repository{db, logger}
 }
 
-func (r *StocksRepository) getAll() []Stock {
+func (r *Repository) getAll() ([]Stock, error) {
 	allStocks := []Stock{}
-	r.db.Find(&allStocks)
-	return allStocks
+	if err := r.db.Find(&allStocks).Error; err != nil {
+		r.logger.Log(err.Error())
+		return allStocks, err
+	}
+
+	return allStocks, nil
 }
 
-func (r *StocksRepository) find(code string) Stock {
+func (r *Repository) find(code string) (Stock, error) {
 	stock := Stock{}
-	r.db.Where(&Stock{Code: code}).Find(&stock)
-	return stock
+	if err := r.db.Where(&Stock{Code: code}).Find(&stock).Error; err != nil {
+		r.logger.Log(err.Error())
+		return stock, err
+	}
+
+	return stock, nil
 }
 
-func (r *StocksRepository) add(stock Stock) {
-	r.db.Create(&stock)
+func (r *Repository) add(stock Stock) error {
+	if err := r.db.Create(&stock).Error; err != nil {
+		r.logger.Log(err.Error())
+		return err
+	}
+
+	return nil
 }

@@ -18,11 +18,11 @@ import (
 
 // Injectors from wire.go:
 
-func InitTransactionAPI(db2 *gorm.DB, logger2 *logger.Logger) transactions.TransactionAPI {
-	transactionRepository := transactions.ProvideTransactionRepository(db2, logger2)
-	stocksRepository := stocks.ProvideStocksRepository(db2)
-	stocksService := stocks.ProvideStocksService(stocksRepository)
-	transactionService := transactions.ProvideTransactionService(transactionRepository, stocksService)
-	transactionAPI := transactions.ProvideTransactionAPI(transactionService)
-	return transactionAPI
+func InitTransactionAPI(db2 *gorm.DB, logger2 *logger.Logger) transactions.API {
+	repository := transactions.ProvideTransactionsRepository(db2, logger2)
+	stocksRepository := stocks.ProvideStocksRepository(db2, logger2)
+	service := stocks.ProvideStocksService(stocksRepository)
+	transactionsService := transactions.ProvideTransactionsService(repository, service)
+	api := transactions.ProvideTransactionsAPI(transactionsService)
+	return api
 }

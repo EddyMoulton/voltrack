@@ -9,7 +9,7 @@ import (
 
 const url = "https://www.asx.com.au/asx/1/share/"
 
-func GetStockPrice(stockCode string) AsxResult {
+func getStockPrice(stockCode string) AsxResult {
 	resp, err := http.Get(url + stockCode + "/")
 
 	if err != nil {
@@ -35,6 +35,7 @@ func GetStockPrice(stockCode string) AsxResult {
 	return AsxResult{}
 }
 
+// AsxResult is a object for passing returned data from Asx Stock Queries
 type AsxResult struct {
 	Code        string  `json:"code"`
 	Description string  `json:"desc_full"`

@@ -1,43 +1,50 @@
 package stocks
 
-type StocksService struct {
-	stocksRepository StocksRepository
+// Service is an object that provides methods for altering or manipulating stocks
+type Service struct {
+	stocksRepository Repository
 }
 
-func ProvideStocksService(r StocksRepository) StocksService {
-	return StocksService{r}
+// ProvideStocksService is a method to handle DI
+func ProvideStocksService(r Repository) Service {
+	return Service{r}
 }
 
-// Stock CRUD
-func (service *StocksService) GetAll() []Stock {
+// GetAll returns all the stock objects in the database
+func (service *Service) GetAll() ([]Stock, error) {
 	return service.stocksRepository.getAll()
 }
 
-func (service *StocksService) Find(code string) Stock {
+// Find returns a single stock object with the provided code
+func (service *Service) Find(code string) (Stock, error) {
 	return service.stocksRepository.find(code)
 }
 
-func (service *StocksService) AddStock(code string) {
-	stock := GetStockPrice(code)
+// AddStock creates a new entry with the provided stock code
+func (service *Service) AddStock(code string) {
+	stock := getStockPrice(code)
 
 	service.stocksRepository.add(Stock{Code: code, Description: stock.Description})
 }
 
-// Stock Logging
-func (service *StocksService) LogStocks() {
-	stocks := service.GetAll()
-	codes := make([]string, len(stocks))
+// LogStocks grabs the current price for all stocks in the database and creates StockLogs for each
+func (service *Service) LogStocks() {
+	stocks, err := service.GetAll()
 
-	for i, stock := range stocks {
-		codes[i] = stock.Code
-	}
+	if err == nil {
+		codes := make([]string, len(stocks))
 
-	logs := make([]StockLog, len(codes))
+		for i, stock := range stocks {
+			codes[i] = stock.Code
+		}
 
-	for i, code := range codes {
-		result := GetStockPrice(code)
+		logs := make([]StockLog, len(codes))
 
-		value := int64(result.LastPrice * 10000) // Convert to x10^4 int
-		logs[i] = StockLog{StockCode: code, Value: value}
+		for i, code := range codes {
+			result := getStockPrice(code)
+
+			value := int64(result.LastPrice * 10000) // Convert to x10^4 int
+			logs[i] = StockLog{StockCode: code, Value: value}
+		}
 	}
 }

@@ -5,24 +5,24 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// TransactionRepository is a set of methods for handling transaction database access
-type TransactionRepository struct {
+// Repository is a set of methods for handling transaction database access
+type Repository struct {
 	db     *gorm.DB
 	logger *logger.Logger
 }
 
-// ProvideTransactionRepository provides a new instance for wire
-func ProvideTransactionRepository(db *gorm.DB, logger *logger.Logger) TransactionRepository {
-	return TransactionRepository{db, logger}
+// ProvideTransactionsRepository provides a new instance for wire
+func ProvideTransactionsRepository(db *gorm.DB, logger *logger.Logger) Repository {
+	return Repository{db, logger}
 }
 
-func (r *TransactionRepository) getAll() []StockTransaction {
+func (r *Repository) getAll() []StockTransaction {
 	allTransactions := []StockTransaction{}
 	r.db.Preload("BuyTransaction").Find(&allTransactions)
 	return allTransactions
 }
 
-func (r *TransactionRepository) addTransactions(transactions []StockTransaction) {
+func (r *Repository) addTransactions(transactions []StockTransaction) {
 	err := r.db.Transaction(func(tx *gorm.DB) error {
 		for _, transaction := range transactions {
 			if err := tx.Create(&transaction).Error; err != nil {

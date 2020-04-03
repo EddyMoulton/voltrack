@@ -6,34 +6,34 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// TransactionAPI is a set of methods for managing transactions
-type TransactionAPI struct {
-	transactionService TransactionService
+// API is a set of methods for managing transactions
+type API struct {
+	transactionsService Service
 }
 
-// ProvideTransactionAPI provides a new instance for wire
-func ProvideTransactionAPI(t TransactionService) TransactionAPI {
-	return TransactionAPI{transactionService: t}
+// ProvideTransactionsAPI provides a new instance for wire
+func ProvideTransactionsAPI(t Service) API {
+	return API{transactionsService: t}
 }
 
 // GetAll returns all transactions
-func (api *TransactionAPI) GetAll(c *gin.Context) {
-	transactions := api.transactionService.GetAll()
+func (api *API) GetAll(c *gin.Context) {
+	transactions := api.transactionsService.GetAll()
 
 	c.JSON(http.StatusOK, gin.H{"transactions": transactions})
 	return
 }
 
 // AddTransaction creates a new set of transactions
-func (api *TransactionAPI) AddTransaction(c *gin.Context) {
-	var data TransactionDto
+func (api *API) AddTransaction(c *gin.Context) {
+	var data TransactionDTO
 
 	if err := c.ShouldBindJSON(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	api.transactionService.AddTransaction(data)
+	api.transactionsService.AddTransaction(data)
 
 	c.JSON(http.StatusOK, gin.H{})
 	return

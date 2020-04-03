@@ -2,6 +2,7 @@ package stocks
 
 import "github.com/jinzhu/gorm"
 
+// StockLog is for storing the value of a Stock at a certain point in time
 type StockLog struct {
 	gorm.Model
 	StockCode string

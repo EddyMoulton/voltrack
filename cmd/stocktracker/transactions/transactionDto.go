@@ -4,8 +4,8 @@ import (
 	"time"
 )
 
-// TransactionDto is used when adding a new purchase record
-type TransactionDto struct {
+// TransactionDTO is used when adding a new purchase record
+type TransactionDTO struct {
 	BuySell   int64     `json:"buySell" binding:"required"`
 	Date      time.Time `json:"date" binding:"required"`
 	Cost      int64     `json:"cost" binding:"required"`
@@ -15,7 +15,7 @@ type TransactionDto struct {
 }
 
 // Map converts a single TransactionDto to many Transaction
-func (t *TransactionDto) Map() (transactions []Transaction) {
+func (t *TransactionDTO) Map() (transactions []Transaction) {
 	transaction := Transaction{Date: t.Date, Cost: t.Cost, Fee: t.Fee / int64(t.Quantity)}
 
 	transactions = make([]Transaction, t.Quantity)
