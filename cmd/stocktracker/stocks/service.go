@@ -19,30 +19,30 @@ func ProvideStocksService(r *Repository, exchanges *Exchanges, logger *logger.Lo
 }
 
 // GetAll returns all the stock objects in the database
-func (service *Service) GetAll() ([]Stock, error) {
-	return service.stocksRepository.getAll()
+func (s *Service) GetAll() ([]Stock, error) {
+	return s.stocksRepository.getAll()
 }
 
 // Find returns a single stock object with the provided code
-func (service *Service) Find(code string) (Stock, error) {
-	return service.stocksRepository.find(code)
+func (s *Service) Find(code string) (Stock, error) {
+	return s.stocksRepository.find(code)
 }
 
 // AddStock creates a new entry with the provided stock code
-func (service *Service) AddStock(code string) (Stock, error) {
-	stock, err := service.exchanges.getStockPrice(code)
+func (s *Service) AddStock(code string) (Stock, error) {
+	stock, err := s.exchanges.getStockPrice(code)
 
 	if err != nil {
-		service.logger.LogFatal("Could not get stock information for code", code, "cancelling add operation")
+		s.logger.LogFatal("Could not get stock information for code", code, "cancelling add operation")
 		return Stock{}, err
 	}
 
-	return service.stocksRepository.add(Stock{Code: code, Description: stock.Description})
+	return s.stocksRepository.add(Stock{Code: code, Description: stock.Description})
 }
 
 // LogStocks grabs the current price for all stocks in the database and creates StockLogs for each
-func (service *Service) LogStocks() {
-	stocks, err := service.GetAll()
+func (s *Service) LogStocks() {
+	stocks, err := s.GetAll()
 
 	if err == nil {
 		codes := make([]string, len(stocks))
@@ -50,21 +50,21 @@ func (service *Service) LogStocks() {
 		for i, stock := range stocks {
 			codes[i] = stock.Code
 		}
-		service.logger.LogInfo(fmt.Sprintf("Capturing value for stock codes: %v", codes))
+		s.logger.LogInfo(fmt.Sprintf("Capturing value for stock codes: %v", codes))
 
 		logs := make([]StockLog, len(codes))
 
 		for i, code := range codes {
-			result, err := service.exchanges.getStockPrice(code)
+			result, err := s.exchanges.getStockPrice(code)
 
 			if err != nil {
-				service.logger.LogFatal(err.Error())
+				s.logger.LogFatal(err.Error())
 			}
 
 			value := int64(result.LastPrice * 10000) // Convert to x10^4 int
 			logs[i] = StockLog{StockCode: code, Value: value}
 		}
 
-		service.stocksRepository.addStockLogs(logs)
+		s.stocksRepository.addStockLogs(logs)
 	}
 }

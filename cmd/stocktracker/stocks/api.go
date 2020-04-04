@@ -17,8 +17,8 @@ func ProvideStocksAPI(s *Service) *API {
 }
 
 // GetAll returns all the stock objects in the database
-func (api *API) GetAll(c *gin.Context) {
-	stocks, err := api.service.GetAll()
+func (a *API) GetAll(c *gin.Context) {
+	stocks, err := a.service.GetAll()
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -30,7 +30,7 @@ func (api *API) GetAll(c *gin.Context) {
 }
 
 // Find returns a single stock object with the provided code
-func (api *API) Find(c *gin.Context) {
+func (a *API) Find(c *gin.Context) {
 	var code string
 
 	if err := c.ShouldBindJSON(&code); err != nil {
@@ -38,7 +38,7 @@ func (api *API) Find(c *gin.Context) {
 		return
 	}
 
-	stocks, err := api.service.Find(code)
+	stocks, err := a.service.Find(code)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -50,7 +50,7 @@ func (api *API) Find(c *gin.Context) {
 }
 
 // AddStock creates a new entry with the provided stock code
-func (api *API) AddStock(c *gin.Context) {
+func (a *API) AddStock(c *gin.Context) {
 	var code string
 
 	if err := c.ShouldBindJSON(&code); err != nil {
@@ -58,7 +58,7 @@ func (api *API) AddStock(c *gin.Context) {
 		return
 	}
 
-	_, err := api.service.AddStock(code)
+	_, err := a.service.AddStock(code)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
