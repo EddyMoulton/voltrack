@@ -3,23 +3,41 @@ package main
 import (
 	"net/http"
 
-	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/logger"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
+	"github.com/golobby/config"
+	"github.com/golobby/config/feeder"
 	"github.com/jinzhu/gorm"
+	"github.com/marcsantiago/gocron"
 )
 
 var db *gorm.DB
 
 func main() {
+	// Database
 	db = InitializeDatabase()
 	defer db.Close()
 
-	logger := logger.Logger{}
+	// Configuration
+	config, err := config.New(config.Options{
+		Feeder: feeder.Map{
+			"logLevel": "Trace",
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
 
-	transactionsAPI := InitTransactionsAPI(db, &logger)
-	stocksAPI := InitStocksAPI(db, &logger)
+	// Service initialisation
+	stocksService := InitStocksService(db, config)
+	transactionsAPI := InitTransactionsAPI(db, config)
+	stocksAPI := InitStocksAPI(db, config)
 
+	// Schedule
+	gocron.Every(1).Minute().Do(stocksService.LogStocks)
+	<-gocron.Start()
+
+	// HTTP
 	router := gin.Default()
 
 	router.Use(static.Serve("/", static.LocalFile("./views", true)))

@@ -20,7 +20,7 @@ func (r *Repository) getAll() ([]Stock, error) {
 	allStocks := []Stock{}
 
 	if err := r.db.Find(&allStocks).Error; err != nil {
-		r.logger.Log(err.Error())
+		r.logger.LogError(err.Error())
 		return allStocks, err
 	}
 
@@ -30,7 +30,7 @@ func (r *Repository) getAll() ([]Stock, error) {
 func (r *Repository) find(code string) (Stock, error) {
 	stock := Stock{}
 	if err := r.db.Where(&Stock{Code: code}).Find(&stock).Error; err != nil {
-		r.logger.Log(err.Error())
+		r.logger.LogError(err.Error())
 		return stock, err
 	}
 
@@ -39,7 +39,7 @@ func (r *Repository) find(code string) (Stock, error) {
 
 func (r *Repository) add(stock Stock) error {
 	if err := r.db.Create(&stock).Error; err != nil {
-		r.logger.Log(err.Error())
+		r.logger.LogError(err.Error())
 		return err
 	}
 

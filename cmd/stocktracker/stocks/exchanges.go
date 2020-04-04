@@ -5,7 +5,19 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/logger"
 )
+
+// Exchanges is a set of methods for interacting with stock exchanges
+type Exchanges struct {
+	logger *logger.Logger
+}
+
+// ProvideExchanges provides a new instance for wire
+func ProvideExchanges(logger *logger.Logger) Exchanges {
+	return Exchanges{logger}
+}
 
 const url = "https://www.asx.com.au/asx/1/share/"
 
@@ -29,6 +41,7 @@ func getStockPrice(stockCode string) (AsxResult, error) {
 
 		var result AsxResult
 		json.Unmarshal([]byte(bodyString), &result)
+		fmt.Println(stockCode)
 		fmt.Println(result.LastPrice)
 
 		return result, nil

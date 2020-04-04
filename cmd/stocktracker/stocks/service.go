@@ -1,16 +1,21 @@
 package stocks
 
-import "github.com/eddymoulton/stock-tracker/cmd/stocktracker/logger"
+import (
+	"fmt"
+
+	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/logger"
+)
 
 // Service is an object that provides methods for altering or manipulating stocks
 type Service struct {
 	stocksRepository Repository
+	exchanges        Exchanges
 	logger           *logger.Logger
 }
 
 // ProvideStocksService is a method to handle DI
-func ProvideStocksService(r Repository, logger *logger.Logger) Service {
-	return Service{r, logger}
+func ProvideStocksService(r Repository, exchanges Exchanges, logger *logger.Logger) Service {
+	return Service{r, exchanges, logger}
 }
 
 // GetAll returns all the stock objects in the database
@@ -46,6 +51,7 @@ func (service *Service) LogStocks() {
 		for i, stock := range stocks {
 			codes[i] = stock.Code
 		}
+		service.logger.LogInfo(fmt.Sprintf("Capturing value for stock codes: %v", codes))
 
 		logs := make([]StockLog, len(codes))
 
@@ -53,7 +59,7 @@ func (service *Service) LogStocks() {
 			result, err := getStockPrice(code)
 
 			if err != nil {
-				service.logger.Log(err.Error())
+				service.logger.LogError(err.Error())
 			}
 
 			value := int64(result.LastPrice * 10000) // Convert to x10^4 int

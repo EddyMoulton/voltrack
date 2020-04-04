@@ -34,6 +34,6 @@ func (r *Repository) addTransactions(transactions []StockTransaction) {
 	})
 
 	if err != nil {
-		r.logger.Log(err.Error())
+		r.logger.LogError(err.Error())
 	}
 }
