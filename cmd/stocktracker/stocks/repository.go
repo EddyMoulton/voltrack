@@ -1,6 +1,8 @@
 package stocks
 
 import (
+	"fmt"
+
 	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/logger"
 	"github.com/jinzhu/gorm"
 )
@@ -17,6 +19,8 @@ func ProvideStocksRepository(db *gorm.DB, logger *logger.Logger) Repository {
 }
 
 func (r *Repository) getAll() ([]Stock, error) {
+	r.logger.LogTrace("[DB] Getting all stocks")
+
 	allStocks := []Stock{}
 
 	if err := r.db.Find(&allStocks).Error; err != nil {
@@ -28,6 +32,8 @@ func (r *Repository) getAll() ([]Stock, error) {
 }
 
 func (r *Repository) find(code string) (Stock, error) {
+	r.logger.LogTrace(fmt.Sprintf("[DB] Finding stock: %s", code))
+
 	stock := Stock{}
 	if err := r.db.Where(&Stock{Code: code}).Find(&stock).Error; err != nil {
 		r.logger.LogError(err.Error())
@@ -38,6 +44,8 @@ func (r *Repository) find(code string) (Stock, error) {
 }
 
 func (r *Repository) add(stock Stock) error {
+	r.logger.LogTrace("[DB] Adding stock")
+
 	if err := r.db.Create(&stock).Error; err != nil {
 		r.logger.LogError(err.Error())
 		return err

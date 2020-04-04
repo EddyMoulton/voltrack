@@ -17,12 +17,16 @@ func ProvideTransactionsRepository(db *gorm.DB, logger *logger.Logger) Repositor
 }
 
 func (r *Repository) getAll() []StockTransaction {
+	r.logger.LogTrace("[DB] Getting all transactions")
+
 	allTransactions := []StockTransaction{}
 	r.db.Preload("BuyTransaction").Find(&allTransactions)
 	return allTransactions
 }
 
 func (r *Repository) addTransactions(transactions []StockTransaction) {
+	r.logger.LogTrace("[DB] Adding transactions")
+
 	err := r.db.Transaction(func(tx *gorm.DB) error {
 		for _, transaction := range transactions {
 			if err := tx.Create(&transaction).Error; err != nil {
