@@ -4,6 +4,7 @@ package main
 
 import (
 	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/logger"
+	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/reporting"
 	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/stocks"
 	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/transactions"
 	"github.com/golobby/config"
@@ -40,4 +41,13 @@ func InitStocksService(db *gorm.DB, config *config.Config) *stocks.Service {
 		stocks.ProvideExchanges)
 
 	return &stocks.Service{}
+}
+
+func InitReportingAPI(db *gorm.DB, config *config.Config) *reporting.API {
+	wire.Build(logger.ProvideLogger,
+		reporting.ProvideReportingRepository,
+		reporting.ProvideReportingService,
+		reporting.ProvideReportingAPI)
+
+	return &reporting.API{}
 }
