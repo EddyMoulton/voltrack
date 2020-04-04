@@ -30,7 +30,7 @@ func (service *Service) Find(code string) (Stock, error) {
 
 // AddStock creates a new entry with the provided stock code
 func (service *Service) AddStock(code string) error {
-	stock, err := getStockPrice(code)
+	stock, err := service.exchanges.getStockPrice(code)
 
 	if err != nil {
 		return err
@@ -56,7 +56,7 @@ func (service *Service) LogStocks() {
 		logs := make([]StockLog, len(codes))
 
 		for i, code := range codes {
-			result, err := getStockPrice(code)
+			result, err := service.exchanges.getStockPrice(code)
 
 			if err != nil {
 				service.logger.LogError(err.Error())

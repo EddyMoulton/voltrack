@@ -21,11 +21,11 @@ func ProvideExchanges(logger *logger.Logger) Exchanges {
 
 const url = "https://www.asx.com.au/asx/1/share/"
 
-func getStockPrice(stockCode string) (AsxResult, error) {
+func (e *Exchanges) getStockPrice(stockCode string) (AsxResult, error) {
 	resp, err := http.Get(url + stockCode + "/")
 
 	if err != nil {
-		fmt.Printf("ERROR: %v\n", err)
+		e.logger.LogError(err.Error())
 		return AsxResult{}, err
 	}
 
@@ -34,15 +34,14 @@ func getStockPrice(stockCode string) (AsxResult, error) {
 	if resp.StatusCode == http.StatusOK {
 		bodyBytes, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			fmt.Printf("ERROR: %v\n", err)
+			e.logger.LogError(err.Error())
 			return AsxResult{}, err
 		}
 		bodyString := string(bodyBytes)
 
 		var result AsxResult
 		json.Unmarshal([]byte(bodyString), &result)
-		fmt.Println(stockCode)
-		fmt.Println(result.LastPrice)
+		e.logger.LogTrace(fmt.Sprintf("Got price for %s: %v", stockCode, result.LastPrice))
 
 		return result, nil
 	}
