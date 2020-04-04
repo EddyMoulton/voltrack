@@ -35,7 +35,6 @@ func main() {
 
 	// Schedule
 	gocron.Every(1).Minute().Do(stocksService.LogStocks)
-	<-gocron.Start()
 
 	// HTTP
 	router := gin.Default()
@@ -54,5 +53,6 @@ func main() {
 	api.GET("/stocks/transactions", transactionsAPI.GetAll)
 	api.GET("/stocks", stocksAPI.GetAll)
 
+	go gocron.Start()
 	router.Run(":3000")
 }
