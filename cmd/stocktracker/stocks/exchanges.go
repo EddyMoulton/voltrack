@@ -25,7 +25,7 @@ func (e *Exchanges) getStockPrice(stockCode string) (AsxResult, error) {
 	resp, err := http.Get(url + stockCode + "/")
 
 	if err != nil {
-		e.logger.LogError(err.Error())
+		e.logger.LogFatal(err.Error())
 		return AsxResult{}, err
 	}
 
@@ -34,7 +34,7 @@ func (e *Exchanges) getStockPrice(stockCode string) (AsxResult, error) {
 	if resp.StatusCode == http.StatusOK {
 		bodyBytes, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			e.logger.LogError(err.Error())
+			e.logger.LogFatal(err.Error())
 			return AsxResult{}, err
 		}
 		bodyString := string(bodyBytes)

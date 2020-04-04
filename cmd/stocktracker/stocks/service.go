@@ -59,7 +59,7 @@ func (service *Service) LogStocks() {
 			result, err := service.exchanges.getStockPrice(code)
 
 			if err != nil {
-				service.logger.LogError(err.Error())
+				service.logger.LogFatal(err.Error())
 			}
 
 			value := int64(result.LastPrice * 10000) // Convert to x10^4 int

@@ -2,6 +2,7 @@ package logger
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/golobby/config"
 )
@@ -21,7 +22,7 @@ var (
 	debugLevel = 2
 	infoLevel  = 3
 	warnLevel  = 4
-	errorLevel = 5
+	fatalLevel = 5
 )
 
 var (
@@ -29,7 +30,7 @@ var (
 	debug = green
 	info  = teal
 	warn  = yellow
-	error = red
+	fatal = red
 )
 
 var (
@@ -51,8 +52,8 @@ func color(colorString string) func(...interface{}) string {
 	return sprint
 }
 
-func (logger *Logger) getLogLevel() int {
-	logLevel, err := logger.config.GetString("logLevel")
+func (l *Logger) getLogLevel() int {
+	logLevel, err := l.config.GetString("logLevel")
 
 	if err != nil {
 		panic(err)
@@ -75,50 +76,64 @@ func (logger *Logger) getLogLevel() int {
 		fallthrough
 	case "Warning":
 		return warnLevel
-	case "error":
+	case "fatal":
 		fallthrough
-	case "Error":
-		return errorLevel
+	case "Fatal":
+		return fatalLevel
 	default:
 		return 0
 	}
 }
 
-func (logger *Logger) canPrint(level int) bool {
-	return logger.getLogLevel() <= level
+func (l *Logger) canPrint(level int) bool {
+	return l.getLogLevel() <= level
 }
 
 // LogTrace writes to the console
-func (logger *Logger) LogTrace(message string) {
-	if logger.canPrint(traceLevel) {
-		fmt.Println(trace("[TRACE] ", message))
+func (l *Logger) LogTrace(message ...string) {
+	if l.canPrint(traceLevel) {
+		message = append([]string{"[TRACE]"}, message...)
+		l.Log(trace, message...)
 	}
 }
 
 // LogDebug writes to the console
-func (logger *Logger) LogDebug(message string) {
-	if logger.canPrint(debugLevel) {
-		fmt.Println(debug("[DEBUG] ", message))
+func (l *Logger) LogDebug(message ...string) {
+	if l.canPrint(debugLevel) {
+		message = append([]string{"[DEBUG]"}, message...)
+		l.Log(debug, message...)
 	}
 }
 
 // LogInfo writes to the console
-func (logger *Logger) LogInfo(message string) {
-	if logger.canPrint(infoLevel) {
-		fmt.Println(info("[INFO] ", message))
+func (l *Logger) LogInfo(message ...string) {
+	if l.canPrint(infoLevel) {
+		message = append([]string{"[INFO]"}, message...)
+		l.Log(info, message...)
 	}
 }
 
 // LogWarning writes to the console
-func (logger *Logger) LogWarning(message string) {
-	if logger.canPrint(warnLevel) {
-		fmt.Println(warn("[WARN] ", message))
+func (l *Logger) LogWarning(message ...string) {
+	if l.canPrint(warnLevel) {
+		message = append([]string{"[WARN]"}, message...)
+		l.Log(warn, message...)
 	}
 }
 
-// LogError writes to the console
-func (logger *Logger) LogError(message string) {
-	if logger.canPrint(errorLevel) {
-		fmt.Println(error("[ERROR] ", message))
+// LogFatal writes to the console
+func (l *Logger) LogFatal(message ...string) {
+	if l.canPrint(fatalLevel) {
+		message = append([]string{"[fatal]"}, message...)
+		l.Log(fatal, message...)
+	}
+}
+
+// Log writes an array of string to the console
+func (l *Logger) Log(logLevel func(...interface{}) string, message ...string) {
+	if logLevel != nil {
+		fmt.Println(logLevel(strings.Join(message, " ")))
+	} else {
+		fmt.Println(strings.Join(message, " "))
 	}
 }

@@ -19,7 +19,7 @@ func ProvideStocksRepository(db *gorm.DB, logger *logger.Logger) *Repository {
 }
 
 func (r *Repository) logDbAccess(message string) {
-	r.logger.LogTrace(fmt.Sprintf("[DB] %s", message))
+	r.logger.LogTrace("[DB]", message)
 }
 
 // Stock
@@ -28,7 +28,7 @@ func (r *Repository) getAll() ([]Stock, error) {
 	allStocks := []Stock{}
 
 	if err := r.db.Find(&allStocks).Error; err != nil {
-		r.logger.LogError(err.Error())
+		r.logger.LogFatal(err.Error())
 		return allStocks, err
 	}
 
@@ -40,7 +40,7 @@ func (r *Repository) find(code string) (Stock, error) {
 
 	stock := Stock{}
 	if err := r.db.Where(&Stock{Code: code}).Find(&stock).Error; err != nil {
-		r.logger.LogError(err.Error())
+		r.logger.LogFatal(err.Error())
 		return stock, err
 	}
 
@@ -51,7 +51,7 @@ func (r *Repository) add(stock Stock) error {
 	r.logDbAccess("Adding stock")
 
 	if err := r.db.Create(&stock).Error; err != nil {
-		r.logger.LogError(err.Error())
+		r.logger.LogFatal(err.Error())
 		return err
 	}
 
@@ -66,7 +66,7 @@ func (r *Repository) addStockLogs(logs []StockLog) error {
 
 	for _, log := range logs {
 		if err := tx.Create(&log).Error; err != nil {
-			r.logger.LogError(err.Error())
+			r.logger.LogFatal(err.Error())
 			r.logDbAccess(fmt.Sprintf("Failed adding log for %s, rolling back", log.StockCode))
 			tx.Rollback()
 			return err
