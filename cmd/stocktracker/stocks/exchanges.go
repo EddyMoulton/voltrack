@@ -15,8 +15,8 @@ type Exchanges struct {
 }
 
 // ProvideExchanges provides a new instance for wire
-func ProvideExchanges(logger *logger.Logger) Exchanges {
-	return Exchanges{logger}
+func ProvideExchanges(logger *logger.Logger) *Exchanges {
+	return &Exchanges{logger}
 }
 
 const url = "https://www.asx.com.au/asx/1/share/"

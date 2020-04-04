@@ -4,13 +4,13 @@ import "github.com/eddymoulton/stock-tracker/cmd/stocktracker/stocks"
 
 // Service is an object that provides methods for altering or manipulating stock transactions
 type Service struct {
-	repository    Repository
-	stocksService stocks.Service
+	repository    *Repository
+	stocksService *stocks.Service
 }
 
 // ProvideTransactionsService is a method to handle DI
-func ProvideTransactionsService(r Repository, s stocks.Service) Service {
-	return Service{r, s}
+func ProvideTransactionsService(r *Repository, s *stocks.Service) *Service {
+	return &Service{r, s}
 }
 
 // GetAll returns all the transactions in the database

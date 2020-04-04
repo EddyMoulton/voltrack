@@ -19,7 +19,7 @@ import (
 
 // Injectors from wire.go:
 
-func InitTransactionsAPI(db2 *gorm.DB, config2 *config.Config) transactions.API {
+func InitTransactionsAPI(db2 *gorm.DB, config2 *config.Config) *transactions.API {
 	loggerLogger := logger.ProvideLogger(config2)
 	repository := transactions.ProvideTransactionsRepository(db2, loggerLogger)
 	stocksRepository := stocks.ProvideStocksRepository(db2, loggerLogger)
@@ -30,7 +30,7 @@ func InitTransactionsAPI(db2 *gorm.DB, config2 *config.Config) transactions.API 
 	return api
 }
 
-func InitStocksAPI(db2 *gorm.DB, config2 *config.Config) stocks.API {
+func InitStocksAPI(db2 *gorm.DB, config2 *config.Config) *stocks.API {
 	loggerLogger := logger.ProvideLogger(config2)
 	repository := stocks.ProvideStocksRepository(db2, loggerLogger)
 	exchanges := stocks.ProvideExchanges(loggerLogger)
@@ -39,7 +39,7 @@ func InitStocksAPI(db2 *gorm.DB, config2 *config.Config) stocks.API {
 	return api
 }
 
-func InitStocksService(db2 *gorm.DB, config2 *config.Config) stocks.Service {
+func InitStocksService(db2 *gorm.DB, config2 *config.Config) *stocks.Service {
 	loggerLogger := logger.ProvideLogger(config2)
 	repository := stocks.ProvideStocksRepository(db2, loggerLogger)
 	exchanges := stocks.ProvideExchanges(loggerLogger)

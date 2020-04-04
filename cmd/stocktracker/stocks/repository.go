@@ -14,8 +14,8 @@ type Repository struct {
 }
 
 // ProvideStocksRepository provides a new instance for wire
-func ProvideStocksRepository(db *gorm.DB, logger *logger.Logger) Repository {
-	return Repository{db, logger}
+func ProvideStocksRepository(db *gorm.DB, logger *logger.Logger) *Repository {
+	return &Repository{db, logger}
 }
 
 func (r *Repository) getAll() ([]Stock, error) {

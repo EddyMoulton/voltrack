@@ -8,12 +8,12 @@ import (
 
 // API is a set of methods for managing transactions
 type API struct {
-	transactionsService Service
+	transactionsService *Service
 }
 
 // ProvideTransactionsAPI provides a new instance for wire
-func ProvideTransactionsAPI(t Service) API {
-	return API{transactionsService: t}
+func ProvideTransactionsAPI(t *Service) *API {
+	return &API{transactionsService: t}
 }
 
 // GetAll returns all transactions

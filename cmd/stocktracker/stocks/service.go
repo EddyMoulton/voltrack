@@ -8,14 +8,14 @@ import (
 
 // Service is an object that provides methods for altering or manipulating stocks
 type Service struct {
-	stocksRepository Repository
-	exchanges        Exchanges
+	stocksRepository *Repository
+	exchanges        *Exchanges
 	logger           *logger.Logger
 }
 
 // ProvideStocksService is a method to handle DI
-func ProvideStocksService(r Repository, exchanges Exchanges, logger *logger.Logger) Service {
-	return Service{r, exchanges, logger}
+func ProvideStocksService(r *Repository, exchanges *Exchanges, logger *logger.Logger) *Service {
+	return &Service{r, exchanges, logger}
 }
 
 // GetAll returns all the stock objects in the database
