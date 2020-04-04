@@ -17,15 +17,20 @@ func ProvideTransactionsAPI(t *Service) *API {
 }
 
 // GetAll returns all transactions
-func (api *API) GetAll(c *gin.Context) {
-	transactions := api.transactionsService.GetAll()
+func (a *API) GetAll(c *gin.Context) {
+	transactions, err := a.transactionsService.GetAll()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{"transactions": transactions})
 	return
 }
 
 // AddTransaction creates a new set of transactions
-func (api *API) AddTransaction(c *gin.Context) {
+func (a *API) AddTransaction(c *gin.Context) {
 	var data TransactionDTO
 
 	if err := c.ShouldBindJSON(&data); err != nil {
@@ -33,7 +38,11 @@ func (api *API) AddTransaction(c *gin.Context) {
 		return
 	}
 
-	api.transactionsService.AddTransaction(data)
+	if data.BuySell > 0 {
+		a.transactionsService.AddBuyTransaction(data)
+	} else if data.BuySell < 0 {
+		a.transactionsService.AddSellTransaction(data)
+	}
 
 	c.JSON(http.StatusOK, gin.H{})
 	return

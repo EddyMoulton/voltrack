@@ -25,7 +25,7 @@ func InitTransactionsAPI(db2 *gorm.DB, config2 *config.Config) *transactions.API
 	stocksRepository := stocks.ProvideStocksRepository(db2, loggerLogger)
 	exchanges := stocks.ProvideExchanges(loggerLogger)
 	service := stocks.ProvideStocksService(stocksRepository, exchanges, loggerLogger)
-	transactionsService := transactions.ProvideTransactionsService(repository, service)
+	transactionsService := transactions.ProvideTransactionsService(repository, service, loggerLogger)
 	api := transactions.ProvideTransactionsAPI(transactionsService)
 	return api
 }

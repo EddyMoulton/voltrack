@@ -1,6 +1,8 @@
 package transactions
 
 import (
+	"strconv"
+
 	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/logger"
 	"github.com/jinzhu/gorm"
 )
@@ -16,32 +18,65 @@ func ProvideTransactionsRepository(db *gorm.DB, logger *logger.Logger) *Reposito
 	return &Repository{db, logger}
 }
 
-func (r *Repository) logDbAccess(message string) {
-	r.logger.LogTrace("[DB]", message)
+func (r *Repository) logDbAccess(message ...string) {
+	message = append([]string{"[DB]"}, message...)
+	r.logger.LogTrace(message...)
 }
 
-func (r *Repository) getAll() []StockTransaction {
+func (r *Repository) getAll() ([]StockTransaction, error) {
 	r.logDbAccess("Getting all transactions")
 
 	allTransactions := []StockTransaction{}
-	r.db.Preload("BuyTransaction").Find(&allTransactions)
-	return allTransactions
+	if err := r.db.Preload("BuyTransaction").Find(&allTransactions).Error; err != nil {
+		r.logger.LogFatal(err.Error())
+		return allTransactions, err
+	}
+
+	return allTransactions, nil
 }
 
-func (r *Repository) addTransactions(transactions []StockTransaction) {
+func (r *Repository) getOldestUnsoldStockTransactions(code string, limit int) ([]StockTransaction, error) {
+	r.logDbAccess("Getting last", strconv.FormatInt(int64(limit), 10), "records for stock code", code)
+
+	transactions := []StockTransaction{}
+	if err := r.db.Preload("BuyTransaction").Preload("SellTransaction").Limit(limit).Where("sell_transaction_id = ?", "0").Where("stock_code = ?", code).Order("created_at asc").Find(&transactions).Error; err != nil {
+		r.logger.LogFatal(err.Error())
+		return transactions, err
+	}
+
+	return transactions, nil
+}
+
+func (r *Repository) addTransactions(transactions []StockTransaction) error {
 	r.logDbAccess("Adding transactions")
 
-	err := r.db.Transaction(func(tx *gorm.DB) error {
-		for _, transaction := range transactions {
-			if err := tx.Create(&transaction).Error; err != nil {
-				return err
-			}
+	tx := r.db.Begin()
+
+	for _, transaction := range transactions {
+		if err := tx.Create(&transaction).Error; err != nil {
+			r.logger.LogFatal(err.Error())
+			r.logDbAccess("Failed adding transaction, rolling back")
+			tx.Rollback()
+			return err
 		}
-
-		return nil
-	})
-
-	if err != nil {
-		r.logger.LogFatal(err.Error())
 	}
+
+	return tx.Commit().Error
+}
+
+func (r *Repository) updateTransactions(transactions []StockTransaction) error {
+	r.logDbAccess("Adding transactions")
+
+	tx := r.db.Begin()
+
+	for _, transaction := range transactions {
+		if err := tx.Save(&transaction).Error; err != nil {
+			r.logger.LogFatal(err.Error())
+			r.logDbAccess("Failed adding transaction, rolling back")
+			tx.Rollback()
+			return err
+		}
+	}
+
+	return tx.Commit().Error
 }

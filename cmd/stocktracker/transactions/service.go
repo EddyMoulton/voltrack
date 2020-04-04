@@ -1,6 +1,7 @@
 package transactions
 
 import (
+	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/logger"
 	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/stocks"
 )
 
@@ -8,28 +9,29 @@ import (
 type Service struct {
 	repository    *Repository
 	stocksService *stocks.Service
+	logger        *logger.Logger
 }
 
 // ProvideTransactionsService is a method to handle DI
-func ProvideTransactionsService(r *Repository, s *stocks.Service) *Service {
-	return &Service{r, s}
+func ProvideTransactionsService(r *Repository, s *stocks.Service, logger *logger.Logger) *Service {
+	return &Service{r, s, logger}
 }
 
 // GetAll returns all the transactions in the database
-func (service *Service) GetAll() []StockTransaction {
-	return service.repository.getAll()
+func (s *Service) GetAll() ([]StockTransaction, error) {
+	return s.repository.getAll()
 }
 
-// AddTransaction adds a new set of transactions to the repositoryervice
-func (service *Service) AddTransaction(transaction TransactionDTO) {
-	stock, err := service.stocksService.Find(transaction.StockCode)
+// AddBuyTransaction adds a new set of transactions to the repositoryervice
+func (s *Service) AddBuyTransaction(transactionDTO TransactionDTO) {
+	stock, err := s.stocksService.Find(transactionDTO.StockCode)
 
 	if err != nil {
-		stock, err = service.stocksService.AddStock(transaction.StockCode)
+		stock, err = s.stocksService.AddStock(transactionDTO.StockCode)
 	}
 
 	if err == nil {
-		transactions := transaction.Map()
+		transactions := transactionDTO.Map()
 
 		stockTransactions := make([]StockTransaction, len(transactions))
 		for i, transaction := range transactions {
@@ -40,6 +42,23 @@ func (service *Service) AddTransaction(transaction TransactionDTO) {
 			stockTransactions[i] = stockTransaction
 		}
 
-		service.repository.addTransactions(stockTransactions)
+		s.repository.addTransactions(stockTransactions)
 	}
+}
+
+// AddSellTransaction adds a new set of transactions to the repositoryervice
+func (s *Service) AddSellTransaction(transactionDTO TransactionDTO) {
+	transactions := transactionDTO.Map()
+
+	stockTransactions, err := s.repository.getOldestUnsoldStockTransactions(transactionDTO.StockCode, len(transactions))
+
+	if err != nil {
+		s.logger.LogFatal("Cannot find stock to add sale transaction for")
+	}
+
+	for i, transaction := range transactions {
+		stockTransactions[i].Sell(&transaction)
+	}
+
+	s.repository.updateTransactions(stockTransactions)
 }

@@ -124,7 +124,7 @@ func (l *Logger) LogWarning(message ...string) {
 // LogFatal writes to the console
 func (l *Logger) LogFatal(message ...string) {
 	if l.canPrint(fatalLevel) {
-		message = append([]string{"[fatal]"}, message...)
+		message = append([]string{"[FATAL]"}, message...)
 		l.Log(fatal, message...)
 	}
 }
