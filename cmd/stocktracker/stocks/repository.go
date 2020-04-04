@@ -18,8 +18,12 @@ func ProvideStocksRepository(db *gorm.DB, logger *logger.Logger) *Repository {
 	return &Repository{db, logger}
 }
 
+func (r *Repository) logDbAccess(message string) {
+	r.logger.LogTrace(fmt.Sprintf("[DB] %s", message))
+}
+
+// Stock
 func (r *Repository) getAll() ([]Stock, error) {
-	r.logger.LogTrace("[DB] Getting all stocks")
 
 	allStocks := []Stock{}
 
@@ -32,7 +36,7 @@ func (r *Repository) getAll() ([]Stock, error) {
 }
 
 func (r *Repository) find(code string) (Stock, error) {
-	r.logger.LogTrace(fmt.Sprintf("[DB] Finding stock: %s", code))
+	r.logDbAccess(fmt.Sprintf("Finding stock: %s", code))
 
 	stock := Stock{}
 	if err := r.db.Where(&Stock{Code: code}).Find(&stock).Error; err != nil {
@@ -44,7 +48,7 @@ func (r *Repository) find(code string) (Stock, error) {
 }
 
 func (r *Repository) add(stock Stock) error {
-	r.logger.LogTrace("[DB] Adding stock")
+	r.logDbAccess("Adding stock")
 
 	if err := r.db.Create(&stock).Error; err != nil {
 		r.logger.LogError(err.Error())
@@ -52,4 +56,22 @@ func (r *Repository) add(stock Stock) error {
 	}
 
 	return nil
+}
+
+// StockLog
+func (r *Repository) addStockLogs(logs []StockLog) error {
+	r.logDbAccess(fmt.Sprintf("Adding %v StockLogs", len(logs)))
+
+	tx := r.db.Begin()
+
+	for _, log := range logs {
+		if err := tx.Create(&log).Error; err != nil {
+			r.logger.LogError(err.Error())
+			r.logDbAccess(fmt.Sprintf("Failed adding log for %s, rolling back", log.StockCode))
+			tx.Rollback()
+			return err
+		}
+	}
+
+	return tx.Commit().Error
 }

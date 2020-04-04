@@ -65,5 +65,7 @@ func (service *Service) LogStocks() {
 			value := int64(result.LastPrice * 10000) // Convert to x10^4 int
 			logs[i] = StockLog{StockCode: code, Value: value}
 		}
+
+		service.stocksRepository.addStockLogs(logs)
 	}
 }

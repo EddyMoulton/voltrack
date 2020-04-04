@@ -41,7 +41,7 @@ func (e *Exchanges) getStockPrice(stockCode string) (AsxResult, error) {
 
 		var result AsxResult
 		json.Unmarshal([]byte(bodyString), &result)
-		e.logger.LogTrace(fmt.Sprintf("Got price for %s: %v", stockCode, result.LastPrice))
+		e.logger.LogTrace(fmt.Sprintf("[ASX] Got price for %s: %v", stockCode, result.LastPrice))
 
 		return result, nil
 	}
