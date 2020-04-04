@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
@@ -34,7 +35,8 @@ func main() {
 	stocksAPI := InitStocksAPI(db, config)
 
 	// Schedule
-	gocron.Every(1).Minute().Do(stocksService.LogStocks)
+	gocron.ChangeLoc(time.Now().UTC().Location())
+	gocron.Every(1).Day().At("9:00").Do(stocksService.LogStocks)
 
 	// HTTP
 	router := gin.Default()
