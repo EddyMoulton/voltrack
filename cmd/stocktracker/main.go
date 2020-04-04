@@ -53,6 +53,7 @@ func main() {
 	}
 
 	api.GET("/stocks/transactions", transactionsAPI.GetAll)
+	api.POST("/stocks/transactions", transactionsAPI.AddTransaction)
 	api.GET("/stocks", stocksAPI.GetAll)
 
 	go gocron.Start()

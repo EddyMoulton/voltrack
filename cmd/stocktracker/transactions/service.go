@@ -1,6 +1,8 @@
 package transactions
 
-import "github.com/eddymoulton/stock-tracker/cmd/stocktracker/stocks"
+import (
+	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/stocks"
+)
 
 // Service is an object that provides methods for altering or manipulating stock transactions
 type Service struct {
@@ -23,6 +25,10 @@ func (service *Service) AddTransaction(transaction TransactionDTO) {
 	stock, err := service.stocksService.Find(transaction.StockCode)
 
 	if err != nil {
+		stock, err = service.stocksService.AddStock(transaction.StockCode)
+	}
+
+	if err == nil {
 		transactions := transaction.Map()
 
 		stockTransactions := make([]StockTransaction, len(transactions))

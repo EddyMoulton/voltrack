@@ -12,7 +12,7 @@ content-type: application/json
 	"date" : "2020-02-08T22:08:00Z",
 	"cost" : 19500,
 	"fee" : 100000,
-	"stockCode" : "AA1",
+	"stockCode" : "VAS",
     "quantity" : 1
 }
 

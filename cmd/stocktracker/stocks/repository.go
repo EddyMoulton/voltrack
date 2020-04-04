@@ -28,7 +28,7 @@ func (r *Repository) getAll() ([]Stock, error) {
 	allStocks := []Stock{}
 
 	if err := r.db.Find(&allStocks).Error; err != nil {
-		r.logger.LogFatal(err.Error())
+		r.logger.LogWarning(err.Error())
 		return allStocks, err
 	}
 
@@ -40,22 +40,28 @@ func (r *Repository) find(code string) (Stock, error) {
 
 	stock := Stock{}
 	if err := r.db.Where(&Stock{Code: code}).Find(&stock).Error; err != nil {
-		r.logger.LogFatal(err.Error())
+		r.logger.LogWarning(err.Error())
 		return stock, err
 	}
 
 	return stock, nil
 }
 
-func (r *Repository) add(stock Stock) error {
+func (r *Repository) add(stock Stock) (Stock, error) {
 	r.logDbAccess("Adding stock")
+
+	if stock.Code == "" {
+		errorMessage := "Cannot add stock with empty code"
+		r.logger.LogFatal(errorMessage)
+		return Stock{}, fmt.Errorf(errorMessage)
+	}
 
 	if err := r.db.Create(&stock).Error; err != nil {
 		r.logger.LogFatal(err.Error())
-		return err
+		return Stock{}, err
 	}
 
-	return nil
+	return stock, nil
 }
 
 // StockLog

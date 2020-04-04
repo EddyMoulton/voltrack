@@ -58,7 +58,7 @@ func (api *API) AddStock(c *gin.Context) {
 		return
 	}
 
-	err := api.service.AddStock(code)
+	_, err := api.service.AddStock(code)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})

@@ -29,16 +29,15 @@ func (service *Service) Find(code string) (Stock, error) {
 }
 
 // AddStock creates a new entry with the provided stock code
-func (service *Service) AddStock(code string) error {
+func (service *Service) AddStock(code string) (Stock, error) {
 	stock, err := service.exchanges.getStockPrice(code)
 
 	if err != nil {
-		return err
+		service.logger.LogFatal("Could not get stock information for code", code, "cancelling add operation")
+		return Stock{}, err
 	}
 
-	service.stocksRepository.add(Stock{Code: code, Description: stock.Description})
-
-	return nil
+	return service.stocksRepository.add(Stock{Code: code, Description: stock.Description})
 }
 
 // LogStocks grabs the current price for all stocks in the database and creates StockLogs for each
