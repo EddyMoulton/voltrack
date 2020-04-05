@@ -89,6 +89,12 @@ func (l *Logger) canPrint(level int) bool {
 	return l.getLogLevel() <= level
 }
 
+// DbAccess writes a message to the console with a [DB] prefix at trace level
+func (l *Logger) DbAccess(message ...string) {
+	message = append([]string{"[DB]"}, message...)
+	l.Trace(message...)
+}
+
 // Trace writes to the console
 func (l *Logger) Trace(message ...string) {
 	if l.canPrint(traceLevel) {

@@ -19,13 +19,8 @@ func ProvideTransactionsRepository(db *gorm.DB, logger *logger.Logger) *Reposito
 	return &Repository{db, logger}
 }
 
-func (r *Repository) logDbAccess(message ...string) {
-	message = append([]string{"[DB]"}, message...)
-	r.log.Trace(message...)
-}
-
 func (r *Repository) getAll() ([]StockTransaction, error) {
-	r.logDbAccess("Getting all transactions")
+	r.log.DbAccess("Getting all transactions")
 
 	allTransactions := []StockTransaction{}
 	if err := r.db.Preload("BuyTransaction").Find(&allTransactions).Error; err != nil {
@@ -37,7 +32,7 @@ func (r *Repository) getAll() ([]StockTransaction, error) {
 }
 
 func (r *Repository) getOldestUnsoldStockTransactions(code string, limit int) ([]StockTransaction, error) {
-	r.logDbAccess("Getting last", strconv.FormatInt(int64(limit), 10), "records for stock code", code)
+	r.log.DbAccess("Getting last", strconv.FormatInt(int64(limit), 10), "records for stock code", code)
 
 	transactions := []StockTransaction{}
 	if err := r.db.
@@ -57,14 +52,14 @@ func (r *Repository) getOldestUnsoldStockTransactions(code string, limit int) ([
 }
 
 func (r *Repository) addTransactions(transactions []StockTransaction) error {
-	r.logDbAccess("Adding transactions")
+	r.log.DbAccess("Adding transactions")
 
 	tx := r.db.Begin()
 
 	for _, transaction := range transactions {
 		if err := tx.Create(&transaction).Error; err != nil {
 			r.log.Error(err.Error())
-			r.logDbAccess("Failed adding transaction, rolling back")
+			r.log.DbAccess("Failed adding transaction, rolling back")
 			tx.Rollback()
 			return err
 		}
@@ -74,14 +69,14 @@ func (r *Repository) addTransactions(transactions []StockTransaction) error {
 }
 
 func (r *Repository) updateTransactions(transactions []StockTransaction) error {
-	r.logDbAccess("Adding transactions")
+	r.log.DbAccess("Adding transactions")
 
 	tx := r.db.Begin()
 
 	for _, transaction := range transactions {
 		if err := tx.Save(&transaction).Error; err != nil {
 			r.log.Error(err.Error())
-			r.logDbAccess("Failed adding transaction, rolling back")
+			r.log.DbAccess("Failed adding transaction, rolling back")
 			tx.Rollback()
 			return err
 		}
@@ -92,7 +87,7 @@ func (r *Repository) updateTransactions(transactions []StockTransaction) error {
 
 // GetStockTransactionsExistingBetween provides all stock transactions bought before the end date and sold after the start date
 func (r *Repository) GetStockTransactionsExistingBetween(start, end time.Time) ([]StockTransaction, error) {
-	r.logDbAccess("Getting stocks that existed between", start.Format("2006-01-02 15:04:05"), "and", end.Format("2006-01-02 15:04:05"))
+	r.log.DbAccess("Getting stocks that existed between", start.Format("2006-01-02 15:04:05"), "and", end.Format("2006-01-02 15:04:05"))
 
 	transactions := []StockTransaction{}
 	if err := r.db.
