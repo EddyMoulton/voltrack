@@ -51,7 +51,9 @@ func InitStocksService(db2 *gorm.DB, config2 *config.Config) *stocks.Service {
 func InitReportingAPI(db2 *gorm.DB, config2 *config.Config) *reporting.API {
 	loggerLogger := logger.ProvideLogger(config2)
 	repository := reporting.ProvideReportingRepository(db2, loggerLogger)
-	service := reporting.ProvideReportingService(repository, loggerLogger)
-	api := reporting.ProvideReportingAPI(service)
+	transactionsRepository := transactions.ProvideTransactionsRepository(db2, loggerLogger)
+	stocksRepository := stocks.ProvideStocksRepository(db2, loggerLogger)
+	service := reporting.ProvideReportingService(repository, transactionsRepository, stocksRepository, loggerLogger)
+	api := reporting.ProvideReportingAPI(service, loggerLogger)
 	return api
 }

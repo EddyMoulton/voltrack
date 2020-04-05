@@ -2,7 +2,9 @@ package stocks
 
 import (
 	"fmt"
+	"time"
 
+	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/helpers"
 	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/logger"
 	"github.com/jinzhu/gorm"
 )
@@ -18,13 +20,13 @@ func ProvideStocksRepository(db *gorm.DB, logger *logger.Logger) *Repository {
 	return &Repository{db, logger}
 }
 
-func (r *Repository) logDbAccess(message string) {
-	r.logger.LogTrace("[DB]", message)
+func (r *Repository) logDbAccess(message ...string) {
+	message = append([]string{"[DB]"}, message...)
+	r.logger.LogTrace(message...)
 }
 
 // Stock
 func (r *Repository) getAll() ([]Stock, error) {
-
 	allStocks := []Stock{}
 
 	if err := r.db.Find(&allStocks).Error; err != nil {
@@ -80,4 +82,25 @@ func (r *Repository) addStockLogs(logs []StockLog) error {
 	}
 
 	return tx.Commit().Error
+}
+
+func (r *Repository) GetStockLogs(stockCodes []string, start, end time.Time) ([]StockLog, error) {
+	r.logDbAccess("Getting StockLogs between",
+		helpers.RemoveTime(start).Format("2006-01-02 15:04:05"),
+		"and",
+		helpers.RemoveTime(end).Add(24*time.Hour).Format("2006-01-02 15:04:05"))
+
+	allStockLogs := []StockLog{}
+
+	if err := r.db.
+		Where("stock_code IN (?)", stockCodes).
+		Where("date >= ?", helpers.RemoveTime(start)).
+		Where("date <= ?", helpers.RemoveTime(end).Add(24*time.Hour)).
+		Find(&allStockLogs).Error; err != nil {
+
+		r.logger.LogWarning(err.Error())
+		return allStockLogs, err
+	}
+
+	return allStockLogs, nil
 }

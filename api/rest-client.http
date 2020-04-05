@@ -3,18 +3,41 @@
 ### Life test
 GET {{base_url}}
 
-### Post transaction
+### Buy stocks
 POST {{base_url}}/stocks/transactions
 content-type: application/json
 
 {
 	"buySell" : 1,
-	"date" : "2020-02-08T22:08:00Z",
+	"date" : "2020-01-08T22:08:00Z",
 	"cost" : 19500,
 	"fee" : 100000,
-	"stockCode" : "VAS",
-    "quantity" : 1
+	"stockCode" : "VGS",
+    "quantity" : 10
 }
+
+### Sell stock
+POST {{base_url}}/stocks/transactions
+content-type: application/json
+
+{
+	"buySell" : -1,
+	"date" : "2020-03-08T22:08:00Z",
+	"cost" : 19500,
+	"fee" : 100000,
+	"stockCode" : "VGS",
+    "quantity" : 5
+}
+
+### Generate Reports
+PUT {{base_url}}/reporting/generate
+content-type: application/json
+
+{
+	"start" : "2020-02-07T22:08:00Z",
+	"end" : "2020-02-09T22:08:00Z"
+}
+
 
 ### Get Transactions
 GET {{base_url}}/stocks/transactions

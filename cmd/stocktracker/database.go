@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/reporting"
 	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/stocks"
 	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/transactions"
 	"github.com/jinzhu/gorm"
@@ -21,7 +22,8 @@ func InitializeDatabase() *gorm.DB {
 	db.AutoMigrate(&transactions.StockTransaction{},
 		&transactions.Transaction{},
 		&stocks.Stock{},
-		&stocks.StockLog{})
+		&stocks.StockLog{},
+		&reporting.OwnedStockLog{})
 
 	return db
 }

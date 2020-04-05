@@ -33,6 +33,7 @@ func main() {
 	stocksService := InitStocksService(db, config)
 	transactionsAPI := InitTransactionsAPI(db, config)
 	stocksAPI := InitStocksAPI(db, config)
+	reportingAPI := InitReportingAPI(db, config)
 
 	// Schedule
 	gocron.ChangeLoc(time.Now().UTC().Location())
@@ -52,6 +53,7 @@ func main() {
 		})
 	}
 
+	api.PUT("/reporting/generate", reportingAPI.GenerateSummaryLogs)
 	api.GET("/stocks/transactions", transactionsAPI.GetAll)
 	api.POST("/stocks/transactions", transactionsAPI.AddTransaction)
 	api.GET("/stocks", stocksAPI.GetAll)

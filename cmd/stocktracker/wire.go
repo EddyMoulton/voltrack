@@ -45,6 +45,8 @@ func InitStocksService(db *gorm.DB, config *config.Config) *stocks.Service {
 
 func InitReportingAPI(db *gorm.DB, config *config.Config) *reporting.API {
 	wire.Build(logger.ProvideLogger,
+		transactions.ProvideTransactionsRepository,
+		stocks.ProvideStocksRepository,
 		reporting.ProvideReportingRepository,
 		reporting.ProvideReportingService,
 		reporting.ProvideReportingAPI)

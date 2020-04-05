@@ -2,6 +2,7 @@ package stocks
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/logger"
 )
@@ -62,7 +63,7 @@ func (s *Service) LogStocks() {
 			}
 
 			value := int64(result.LastPrice * 10000) // Convert to x10^4 int
-			logs[i] = StockLog{StockCode: code, Value: value}
+			logs[i] = StockLog{Date: time.Now(), StockCode: code, Value: value}
 		}
 
 		s.stocksRepository.addStockLogs(logs)
