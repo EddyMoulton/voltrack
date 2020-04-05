@@ -10,7 +10,7 @@ import (
 // API is a set of methods for accessing reporting
 type API struct {
 	service *Service
-	logger  *logger.Logger
+	log     *logger.Logger
 }
 
 // ProvideReportingAPI provides a new instance for wire
@@ -23,7 +23,7 @@ func (a *API) GenerateSummaryLogs(c *gin.Context) {
 	var dateRange DateRangeDTO
 
 	if err := c.ShouldBindJSON(&dateRange); err != nil {
-		a.logger.LogWarning(err.Error())
+		a.log.Warning(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

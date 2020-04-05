@@ -10,8 +10,8 @@ import (
 
 // Repository is a set of methods for handling transaction database access
 type Repository struct {
-	db     *gorm.DB
-	logger *logger.Logger
+	db  *gorm.DB
+	log *logger.Logger
 }
 
 // ProvideTransactionsRepository provides a new instance for wire
@@ -21,7 +21,7 @@ func ProvideTransactionsRepository(db *gorm.DB, logger *logger.Logger) *Reposito
 
 func (r *Repository) logDbAccess(message ...string) {
 	message = append([]string{"[DB]"}, message...)
-	r.logger.LogTrace(message...)
+	r.log.Trace(message...)
 }
 
 func (r *Repository) getAll() ([]StockTransaction, error) {
@@ -29,7 +29,7 @@ func (r *Repository) getAll() ([]StockTransaction, error) {
 
 	allTransactions := []StockTransaction{}
 	if err := r.db.Preload("BuyTransaction").Find(&allTransactions).Error; err != nil {
-		r.logger.LogFatal(err.Error())
+		r.log.Error(err.Error())
 		return allTransactions, err
 	}
 
@@ -49,7 +49,7 @@ func (r *Repository) getOldestUnsoldStockTransactions(code string, limit int) ([
 		Order("created_at asc").
 		Find(&transactions).Error; err != nil {
 
-		r.logger.LogFatal(err.Error())
+		r.log.Error(err.Error())
 		return transactions, err
 	}
 
@@ -63,7 +63,7 @@ func (r *Repository) addTransactions(transactions []StockTransaction) error {
 
 	for _, transaction := range transactions {
 		if err := tx.Create(&transaction).Error; err != nil {
-			r.logger.LogFatal(err.Error())
+			r.log.Error(err.Error())
 			r.logDbAccess("Failed adding transaction, rolling back")
 			tx.Rollback()
 			return err
@@ -80,7 +80,7 @@ func (r *Repository) updateTransactions(transactions []StockTransaction) error {
 
 	for _, transaction := range transactions {
 		if err := tx.Save(&transaction).Error; err != nil {
-			r.logger.LogFatal(err.Error())
+			r.log.Error(err.Error())
 			r.logDbAccess("Failed adding transaction, rolling back")
 			tx.Rollback()
 			return err
@@ -102,7 +102,7 @@ func (r *Repository) GetStockTransactionsExistingBetween(start, end time.Time) (
 		Where("sell_transaction_id IN (?)", r.db.Table("transactions").Select("id").Where("date > ?", start.Format("2006-01-02 15:04:05")).QueryExpr()).
 		Find(&transactions).Error; err != nil {
 
-		r.logger.LogFatal(err.Error())
+		r.log.Error(err.Error())
 		return transactions, err
 	}
 

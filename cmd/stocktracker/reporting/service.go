@@ -15,7 +15,7 @@ type Service struct {
 	repository             *Repository
 	transactionsRepository *transactions.Repository
 	stocksRepository       *stocks.Repository
-	logger                 *logger.Logger
+	log                    *logger.Logger
 }
 
 // ProvideReportingService is a method to handle DI
@@ -32,7 +32,7 @@ func (s *Service) GenerateSummaryLogs(start, end time.Time) error {
 	transactions, err := s.transactionsRepository.GetStockTransactionsExistingBetween(start, end)
 
 	if err == nil {
-		s.logger.LogInfo("Creating", strconv.FormatInt(int64(len(transactions)), 10), "records")
+		s.log.Info("Creating", strconv.FormatInt(int64(len(transactions)), 10), "records")
 
 		// Initialise map and date slice
 		m := make(map[time.Time]map[string]int)
@@ -70,7 +70,7 @@ func (s *Service) GenerateSummaryLogs(start, end time.Time) error {
 
 		// Get cost values for stocks over date range
 		stockLogs, err := s.stocksRepository.GetStockLogs(codes, start, end)
-		s.logger.LogDebug("Number of stock logs", strconv.FormatInt(int64(len(stockLogs)), 10))
+		s.log.Debug("Number of stock logs", strconv.FormatInt(int64(len(stockLogs)), 10))
 
 		if err != nil {
 			return err
@@ -91,7 +91,7 @@ func (s *Service) GenerateSummaryLogs(start, end time.Time) error {
 				}
 
 				if date.IsZero() || stockCode == "" || quantity == 0 || value == 0 {
-					s.logger.LogWarning("Missing data for", stockCode, "on", date.Format("2006-01-02"))
+					s.log.Warning("Missing data for", stockCode, "on", date.Format("2006-01-02"))
 				} else {
 					ownedStockLogs[index] = OwnedStockLog{
 						Date:            date,
@@ -108,10 +108,10 @@ func (s *Service) GenerateSummaryLogs(start, end time.Time) error {
 
 		ownedStockLogs = ownedStockLogs[0:index]
 
-		s.logger.LogDebug("SUMMARY")
+		s.log.Debug("SUMMARY")
 
 		for _, log := range ownedStockLogs {
-			s.logger.LogDebug(log.StockCode, log.Date.Format("2006-01-02 15:04:05"), strconv.FormatInt(log.IndividualValue, 10), strconv.FormatInt(log.Quantity, 10), strconv.FormatInt(log.TotalValue, 10))
+			s.log.Debug(log.StockCode, log.Date.Format("2006-01-02 15:04:05"), strconv.FormatInt(log.IndividualValue, 10), strconv.FormatInt(log.Quantity, 10), strconv.FormatInt(log.TotalValue, 10))
 		}
 	}
 

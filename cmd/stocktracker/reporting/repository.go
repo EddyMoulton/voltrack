@@ -7,8 +7,8 @@ import (
 
 // Repository is a set of methods for handling reporting database access
 type Repository struct {
-	db     *gorm.DB
-	logger *logger.Logger
+	db  *gorm.DB
+	log *logger.Logger
 }
 
 // ProvideReportingRepository provides a new instance for wire

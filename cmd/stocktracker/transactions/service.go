@@ -9,7 +9,7 @@ import (
 type Service struct {
 	repository    *Repository
 	stocksService *stocks.Service
-	logger        *logger.Logger
+	log           *logger.Logger
 }
 
 // ProvideTransactionsService is a method to handle DI
@@ -53,7 +53,7 @@ func (s *Service) AddSellTransaction(transactionDTO TransactionDTO) {
 	stockTransactions, err := s.repository.getOldestUnsoldStockTransactions(transactionDTO.StockCode, len(transactions))
 
 	if err != nil {
-		s.logger.LogFatal("Cannot find stock to add sale transaction for")
+		s.log.Error("Cannot find stock to add sale transaction for")
 	}
 
 	for i, transaction := range transactions {

@@ -11,8 +11,8 @@ import (
 
 // Repository is a set of methods for handling stocks database access
 type Repository struct {
-	db     *gorm.DB
-	logger *logger.Logger
+	db  *gorm.DB
+	log *logger.Logger
 }
 
 // ProvideStocksRepository provides a new instance for wire
@@ -22,7 +22,7 @@ func ProvideStocksRepository(db *gorm.DB, logger *logger.Logger) *Repository {
 
 func (r *Repository) logDbAccess(message ...string) {
 	message = append([]string{"[DB]"}, message...)
-	r.logger.LogTrace(message...)
+	r.log.Trace(message...)
 }
 
 // Stock
@@ -30,7 +30,7 @@ func (r *Repository) getAll() ([]Stock, error) {
 	allStocks := []Stock{}
 
 	if err := r.db.Find(&allStocks).Error; err != nil {
-		r.logger.LogWarning(err.Error())
+		r.log.Warning(err.Error())
 		return allStocks, err
 	}
 
@@ -42,7 +42,7 @@ func (r *Repository) find(code string) (Stock, error) {
 
 	stock := Stock{}
 	if err := r.db.Where(&Stock{Code: code}).Find(&stock).Error; err != nil {
-		r.logger.LogWarning(err.Error())
+		r.log.Warning(err.Error())
 		return stock, err
 	}
 
@@ -54,12 +54,12 @@ func (r *Repository) add(stock Stock) (Stock, error) {
 
 	if stock.Code == "" {
 		errorMessage := "Cannot add stock with empty code"
-		r.logger.LogFatal(errorMessage)
+		r.log.Error(errorMessage)
 		return Stock{}, fmt.Errorf(errorMessage)
 	}
 
 	if err := r.db.Create(&stock).Error; err != nil {
-		r.logger.LogFatal(err.Error())
+		r.log.Error(err.Error())
 		return Stock{}, err
 	}
 
@@ -74,7 +74,7 @@ func (r *Repository) addStockLogs(logs []StockLog) error {
 
 	for _, log := range logs {
 		if err := tx.Create(&log).Error; err != nil {
-			r.logger.LogFatal(err.Error())
+			r.log.Error(err.Error())
 			r.logDbAccess(fmt.Sprintf("Failed adding log for %s, rolling back", log.StockCode))
 			tx.Rollback()
 			return err
@@ -98,7 +98,7 @@ func (r *Repository) GetStockLogs(stockCodes []string, start, end time.Time) ([]
 		Where("date <= ?", helpers.RemoveTime(end).Add(24*time.Hour)).
 		Find(&allStockLogs).Error; err != nil {
 
-		r.logger.LogWarning(err.Error())
+		r.log.Warning(err.Error())
 		return allStockLogs, err
 	}
 

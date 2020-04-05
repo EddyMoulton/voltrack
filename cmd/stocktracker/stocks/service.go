@@ -11,7 +11,7 @@ import (
 type Service struct {
 	stocksRepository *Repository
 	exchanges        *Exchanges
-	logger           *logger.Logger
+	log              *logger.Logger
 }
 
 // ProvideStocksService is a method to handle DI
@@ -34,7 +34,7 @@ func (s *Service) AddStock(code string) (Stock, error) {
 	stock, err := s.exchanges.getStockPrice(code)
 
 	if err != nil {
-		s.logger.LogFatal("Could not get stock information for code", code, "cancelling add operation")
+		s.log.Error("Could not get stock information for code", code, "cancelling add operation")
 		return Stock{}, err
 	}
 
@@ -51,7 +51,7 @@ func (s *Service) LogStocks() {
 		for i, stock := range stocks {
 			codes[i] = stock.Code
 		}
-		s.logger.LogInfo(fmt.Sprintf("Capturing value for stock codes: %v", codes))
+		s.log.Info(fmt.Sprintf("Capturing value for stock codes: %v", codes))
 
 		logs := make([]StockLog, len(codes))
 
@@ -59,7 +59,7 @@ func (s *Service) LogStocks() {
 			result, err := s.exchanges.getStockPrice(code)
 
 			if err != nil {
-				s.logger.LogFatal(err.Error())
+				s.log.Error(err.Error())
 			}
 
 			value := int64(result.LastPrice * 10000) // Convert to x10^4 int

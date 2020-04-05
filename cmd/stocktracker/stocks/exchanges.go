@@ -11,7 +11,7 @@ import (
 
 // Exchanges is a set of methods for interacting with stock exchanges
 type Exchanges struct {
-	logger *logger.Logger
+	log *logger.Logger
 }
 
 // ProvideExchanges provides a new instance for wire
@@ -25,7 +25,7 @@ func (e *Exchanges) getStockPrice(stockCode string) (AsxResult, error) {
 	resp, err := http.Get(url + stockCode + "/")
 
 	if err != nil {
-		e.logger.LogFatal(err.Error())
+		e.log.Error(err.Error())
 		return AsxResult{}, err
 	}
 
@@ -34,14 +34,14 @@ func (e *Exchanges) getStockPrice(stockCode string) (AsxResult, error) {
 	if resp.StatusCode == http.StatusOK {
 		bodyBytes, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			e.logger.LogFatal(err.Error())
+			e.log.Error(err.Error())
 			return AsxResult{}, err
 		}
 		bodyString := string(bodyBytes)
 
 		var result AsxResult
 		json.Unmarshal([]byte(bodyString), &result)
-		e.logger.LogTrace(fmt.Sprintf("[ASX] Got price for %s: %v", stockCode, result.LastPrice))
+		e.log.Trace(fmt.Sprintf("[ASX] Got price for %s: %v", stockCode, result.LastPrice))
 
 		return result, nil
 	}

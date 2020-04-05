@@ -89,48 +89,48 @@ func (l *Logger) canPrint(level int) bool {
 	return l.getLogLevel() <= level
 }
 
-// LogTrace writes to the console
-func (l *Logger) LogTrace(message ...string) {
+// Trace writes to the console
+func (l *Logger) Trace(message ...string) {
 	if l.canPrint(traceLevel) {
 		message = append([]string{"[TRACE]"}, message...)
-		l.Log(trace, message...)
+		l.Basic(trace, message...)
 	}
 }
 
-// LogDebug writes to the console
-func (l *Logger) LogDebug(message ...string) {
+// Debug writes to the console
+func (l *Logger) Debug(message ...string) {
 	if l.canPrint(debugLevel) {
 		message = append([]string{"[DEBUG]"}, message...)
-		l.Log(debug, message...)
+		l.Basic(debug, message...)
 	}
 }
 
-// LogInfo writes to the console
-func (l *Logger) LogInfo(message ...string) {
+// Info writes to the console
+func (l *Logger) Info(message ...string) {
 	if l.canPrint(infoLevel) {
 		message = append([]string{"[INFO]"}, message...)
-		l.Log(info, message...)
+		l.Basic(info, message...)
 	}
 }
 
-// LogWarning writes to the console
-func (l *Logger) LogWarning(message ...string) {
+// Warning writes to the console
+func (l *Logger) Warning(message ...string) {
 	if l.canPrint(warnLevel) {
 		message = append([]string{"[WARN]"}, message...)
-		l.Log(warn, message...)
+		l.Basic(warn, message...)
 	}
 }
 
-// LogFatal writes to the console
-func (l *Logger) LogFatal(message ...string) {
+// Error writes to the console
+func (l *Logger) Error(message ...string) {
 	if l.canPrint(fatalLevel) {
 		message = append([]string{"[FATAL]"}, message...)
-		l.Log(fatal, message...)
+		l.Basic(fatal, message...)
 	}
 }
 
-// Log writes an array of string to the console
-func (l *Logger) Log(logLevel func(...interface{}) string, message ...string) {
+// Basic writes an array of string to the console
+func (l *Logger) Basic(logLevel func(...interface{}) string, message ...string) {
 	if logLevel != nil {
 		fmt.Println(logLevel(strings.Join(message, " ")))
 	} else {
