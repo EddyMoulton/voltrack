@@ -49,3 +49,7 @@ func OnSameDay(date1, date2 time.Time) bool {
 
 	return y1 == y2 && m1 == m2 && d1 == d2
 }
+
+func MaxTime() time.Time {
+	return time.Unix(1<<63-62135596801, 999999999)
+}

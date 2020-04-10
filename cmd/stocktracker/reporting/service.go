@@ -108,11 +108,11 @@ func (s *Service) GenerateSummaryLogs(start, end time.Time) error {
 
 		ownedStockLogs = ownedStockLogs[0:index]
 
-		s.log.Debug("SUMMARY")
-
 		for _, log := range ownedStockLogs {
 			s.log.Debug(log.StockCode, log.Date.Format("2006-01-02 15:04:05"), strconv.FormatInt(log.IndividualValue, 10), strconv.FormatInt(log.Quantity, 10), strconv.FormatInt(log.TotalValue, 10))
 		}
+
+		s.repository.SaveOwnedStockLogs(ownedStockLogs)
 	}
 
 	return err
