@@ -38,6 +38,16 @@ content-type: application/json
 	"end" : "2020-02-13T22:08:00Z"
 }
 
+### Get Reports
+GET {{base_url}}/stocks/history
+content-type: application/json
+
+{
+	"stockCodes" : ["VGS", "AGR"],
+	"start" : "2020-02-07T22:08:00Z",
+	"end" : "2020-02-13T22:08:00Z"
+}
+
 
 ### Get Transactions
 GET {{base_url}}/stocks/transactions

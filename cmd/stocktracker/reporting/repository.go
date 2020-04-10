@@ -21,6 +21,22 @@ func ProvideReportingRepository(db *gorm.DB, logger *logger.Logger) *Repository 
 	return &Repository{db, logger}
 }
 
+// GetOwnedStockLogs returns all reporting logs for the provided codes in the date range
+func (r *Repository) GetOwnedStockLogs(stockCodes []string, start, end time.Time) ([]OwnedStockLog, error) {
+	ownedStockLogs := []OwnedStockLog{}
+	if err := r.db.
+		Where("stock_code IN (?)", stockCodes).
+		Where("date >= ?", helpers.RemoveTime(start)).
+		Where("date <= ?", helpers.RemoveTime(end).Add(24*time.Hour)).
+		Find(&ownedStockLogs).Error; err != nil {
+
+		r.log.Warning(err.Error())
+		return ownedStockLogs, err
+	}
+
+	return ownedStockLogs, nil
+}
+
 // SaveOwnedStockLogs adds (or updates existing) reporting logs
 func (r *Repository) SaveOwnedStockLogs(logs []OwnedStockLog) error {
 	r.log.DbAccess(fmt.Sprintf("Adding/Updating OwnedStockLogs (%d entries)", len(logs)))
@@ -54,14 +70,9 @@ func (r *Repository) SaveOwnedStockLogs(logs []OwnedStockLog) error {
 	}
 
 	// Load existing logs within date range
-	existingOwnedStockLogs := []OwnedStockLog{}
-	if err := r.db.
-		Where("stock_code IN (?)", stockCodes).
-		Where("date >= ?", helpers.RemoveTime(start)).
-		Where("date <= ?", helpers.RemoveTime(end).Add(24*time.Hour)).
-		Find(&existingOwnedStockLogs).Error; err != nil {
+	existingOwnedStockLogs, err := r.GetOwnedStockLogs(stockCodes, start, end)
 
-		r.log.Warning(err.Error())
+	if err != nil {
 		return err
 	}
 

@@ -27,6 +27,11 @@ func ProvideReportingService(r *Repository,
 	return &Service{r, transactionsRepository, stocksRepository, logger}
 }
 
+// GetOwnedStockLogs returns all reporting logs for the provided codes in the date range
+func (s *Service) GetOwnedStockLogs(stockCodes []string, start, end time.Time) ([]OwnedStockLog, error) {
+	return s.repository.GetOwnedStockLogs(stockCodes, start, end)
+}
+
 // GenerateSummaryLogs takes all stock transactions that exist in the time period and create/replace
 func (s *Service) GenerateSummaryLogs(start, end time.Time) error {
 	transactions, err := s.transactionsRepository.GetStockTransactionsExistingBetween(start, end)
