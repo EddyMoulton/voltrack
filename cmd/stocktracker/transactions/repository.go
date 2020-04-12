@@ -31,6 +31,26 @@ func (r *Repository) getAll() ([]StockTransaction, error) {
 	return allTransactions, nil
 }
 
+func (r *Repository) getAllUnsoldStockTransactions() ([]StockTransaction, error) {
+	r.log.DbAccess("Getting transactions for all unsold stocks")
+
+	transactions := []StockTransaction{}
+	if err := r.db.
+		Preload("BuyTransaction").
+		Preload("SellTransaction").
+		Where("sell_transaction_id = ?", "0").
+		Order("created_at asc").
+		Find(&transactions).Error; err != nil {
+
+		r.log.Error(err.Error())
+		return transactions, err
+	}
+
+	r.log.Trace("Found", strconv.FormatInt(int64(len(transactions)), 10), "transactions")
+
+	return transactions, nil
+}
+
 func (r *Repository) getOldestUnsoldStockTransactions(code string, limit int) ([]StockTransaction, error) {
 	r.log.DbAccess("Getting last", strconv.FormatInt(int64(limit), 10), "records for stock code", code)
 

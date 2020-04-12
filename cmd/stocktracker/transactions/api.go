@@ -8,17 +8,17 @@ import (
 
 // API is a set of methods for managing transactions
 type API struct {
-	transactionsService *Service
+	service *Service
 }
 
 // ProvideTransactionsAPI provides a new instance for wire
 func ProvideTransactionsAPI(t *Service) *API {
-	return &API{transactionsService: t}
+	return &API{service: t}
 }
 
 // GetAll returns all transactions
 func (a *API) GetAll(c *gin.Context) {
-	transactions, err := a.transactionsService.GetAll()
+	transactions, err := a.service.GetAll()
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -26,6 +26,19 @@ func (a *API) GetAll(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"transactions": transactions})
+	return
+}
+
+// GetCurrentStocks returns all the stock objects in the database that are currently owned along with basic stas
+func (a *API) GetCurrentStocks(c *gin.Context) {
+	stocks, err := a.service.GetCurrentStocks()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"currentStocks": stocks})
 	return
 }
 
@@ -39,9 +52,9 @@ func (a *API) AddTransaction(c *gin.Context) {
 	}
 
 	if data.BuySell > 0 {
-		a.transactionsService.AddBuyTransaction(data)
+		a.service.AddBuyTransaction(data)
 	} else if data.BuySell < 0 {
-		a.transactionsService.AddSellTransaction(data)
+		a.service.AddSellTransaction(data)
 	}
 
 	c.JSON(http.StatusOK, gin.H{})

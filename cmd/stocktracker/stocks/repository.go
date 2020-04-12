@@ -99,3 +99,20 @@ func (r *Repository) GetStockLogs(stockCodes []string, start, end time.Time) ([]
 
 	return allStockLogs, nil
 }
+
+func (r *Repository) GetLatestStockLog(stockCode string) (StockLog, error) {
+	r.log.DbAccess("Get last stock log for", stockCode)
+
+	log := StockLog{}
+
+	if err := r.db.
+		Where("stock_code = ?", stockCode).
+		Order("date desc").
+		Last(&log).Error; err != nil {
+
+		r.log.Warning(err.Error())
+		return log, err
+	}
+
+	return log, nil
+}

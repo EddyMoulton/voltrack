@@ -53,6 +53,7 @@ func main() {
 		})
 	}
 
+	api.GET("/stocks/current", transactionsAPI.GetCurrentStocks)
 	api.GET("/stocks/history", reportingAPI.GetOwnedStockLogs)
 	api.PUT("/reporting/generate", reportingAPI.GenerateSummaryLogs)
 	api.GET("/stocks/transactions", transactionsAPI.GetAll)

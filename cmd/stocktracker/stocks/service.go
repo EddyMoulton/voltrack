@@ -69,3 +69,7 @@ func (s *Service) LogStocks() {
 		s.stocksRepository.addStockLogs(logs)
 	}
 }
+
+func (s *Service) GetLatestStockLog(stockCode string) (StockLog, error) {
+	return s.stocksRepository.GetLatestStockLog(stockCode)
+}
