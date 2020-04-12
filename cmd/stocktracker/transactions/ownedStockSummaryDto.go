@@ -4,12 +4,12 @@ import "github.com/eddymoulton/stock-tracker/cmd/stocktracker/stocks"
 
 // OwnedStockSummaryDTO is used when returning summary data about an owned stock
 type OwnedStockSummaryDTO struct {
-	Code         string
-	Quanity      int
-	CurrentValue int64
-	TotalValue   int64
-	PaidValue    int64
-	Difference   int64
+	Code         string `json:"code" binding:"required"`
+	Quanity      int    `json:"quanity" binding:"required"`
+	CurrentValue int64  `json:"currentValue" binding:"required"`
+	TotalValue   int64  `json:"totalValue" binding:"required"`
+	PaidValue    int64  `json:"paidValue" binding:"required"`
+	Difference   int64  `json:"difference" binding:"required"`
 }
 
 func CreateStockSummaries(stockCodes []string, stockTransactions []StockTransaction, latestPrices []stocks.StockLog) []OwnedStockSummaryDTO {

@@ -5,6 +5,7 @@ go 1.13
 require (
 	github.com/cosmtrek/air v1.12.0 // indirect
 	github.com/fatih/color v1.9.0 // indirect
+	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/contrib v0.0.0-20191209060500-d6e26eeaa607
 	github.com/gin-gonic/gin v1.5.0
 	github.com/githubnemo/CompileDaemon v1.0.0 // indirect
