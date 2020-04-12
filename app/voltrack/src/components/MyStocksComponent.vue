@@ -8,7 +8,7 @@
         </b-table-column>
 
         <b-table-column field="quanity" label="Quantity">
-          ${{ props.row.quanity }}
+          {{ props.row.quanity }}
         </b-table-column>
 
         <b-table-column field="currentValue" label="Value">

@@ -9,9 +9,9 @@ import (
 
 // Service is an object that provides methods for altering or manipulating stocks
 type Service struct {
-	stocksRepository *Repository
-	exchanges        *Exchanges
-	log              *logger.Logger
+	repository *Repository
+	exchanges  *Exchanges
+	log        *logger.Logger
 }
 
 // ProvideStocksService is a method to handle DI
@@ -21,12 +21,17 @@ func ProvideStocksService(r *Repository, exchanges *Exchanges, logger *logger.Lo
 
 // GetAll returns all the stock objects in the database
 func (s *Service) GetAll() ([]Stock, error) {
-	return s.stocksRepository.getAll()
+	return s.repository.getAll()
+}
+
+// GetAllCodes returns all the stock codes in the database
+func (s *Service) GetAllCodes() ([]string, error) {
+	return s.repository.getAllCodes()
 }
 
 // Find returns a single stock object with the provided code
 func (s *Service) Find(code string) (Stock, error) {
-	return s.stocksRepository.find(code)
+	return s.repository.find(code)
 }
 
 // AddStock creates a new entry with the provided stock code
@@ -38,38 +43,49 @@ func (s *Service) AddStock(code string) (Stock, error) {
 		return Stock{}, err
 	}
 
-	return s.stocksRepository.add(Stock{Code: code, Description: stock.Description})
-}
-
-// LogStocks grabs the current price for all stocks in the database and creates StockLogs for each
-func (s *Service) LogStocks() {
-	stocks, err := s.GetAll()
+	stockModel, err := s.repository.add(Stock{Code: code, Description: stock.Description})
 
 	if err == nil {
-		codes := make([]string, len(stocks))
+		s.LogStocks([]string{stockModel.Code})
+	}
 
-		for i, stock := range stocks {
-			codes[i] = stock.Code
-		}
-		s.log.Info(fmt.Sprintf("Capturing value for stock codes: %v", codes))
+	return stockModel, err
+}
 
-		logs := make([]StockLog, len(codes))
+// LogAllStocks grabs the current price for all stocks in the database and creates StockLogs for each
+func (s *Service) LogAllStocks() {
+	stockCodes, err := s.GetAllCodes()
 
-		for i, code := range codes {
-			result, err := s.exchanges.getStockPrice(code)
-
-			if err != nil {
-				s.log.Error(err.Error())
-			}
-
-			value := int64(result.LastPrice * 10000) // Convert to x10^4 int
-			logs[i] = StockLog{Date: time.Now(), StockCode: code, Value: value}
-		}
-
-		s.stocksRepository.addStockLogs(logs)
+	if err == nil {
+		s.LogStocks(stockCodes)
 	}
 }
 
+// LogStocks grabs the current price for all passed stock codes and creates StockLogs for each
+func (s *Service) LogStocks(stockCodes []string) {
+	codes := make([]string, len(stockCodes))
+
+	for i, code := range stockCodes {
+		codes[i] = code
+	}
+	s.log.Info(fmt.Sprintf("Capturing value for stock codes: %v", codes))
+
+	logs := make([]StockLog, len(codes))
+
+	for i, code := range codes {
+		result, err := s.exchanges.getStockPrice(code)
+
+		if err != nil {
+			s.log.Error(err.Error())
+		}
+
+		value := int64(result.LastPrice * 10000) // Convert to x10^4 int
+		logs[i] = StockLog{Date: time.Now(), StockCode: code, Value: value}
+	}
+
+	s.repository.addStockLogs(logs)
+}
+
 func (s *Service) GetLatestStockLog(stockCode string) (StockLog, error) {
-	return s.stocksRepository.GetLatestStockLog(stockCode)
+	return s.repository.GetLatestStockLog(stockCode)
 }

@@ -32,6 +32,17 @@ func (r *Repository) getAll() ([]Stock, error) {
 	return allStocks, nil
 }
 
+func (r *Repository) getAllCodes() ([]string, error) {
+	allStockCodes := []string{}
+
+	if err := r.db.Select("stock_code").Find(&allStockCodes).Error; err != nil {
+		r.log.Warning(err.Error())
+		return allStockCodes, err
+	}
+
+	return allStockCodes, nil
+}
+
 func (r *Repository) find(code string) (Stock, error) {
 	r.log.DbAccess(fmt.Sprintf("Finding stock: %s", code))
 
@@ -111,7 +122,8 @@ func (r *Repository) GetLatestStockLog(stockCode string) (StockLog, error) {
 		Last(&log).Error; err != nil {
 
 		r.log.Warning(err.Error())
-		return log, err
+		log.StockCode = stockCode
+		return log, nil // do not return error
 	}
 
 	return log, nil

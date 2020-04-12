@@ -3,17 +3,19 @@ package transactions
 import (
 	"net/http"
 
+	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/logger"
 	"github.com/gin-gonic/gin"
 )
 
 // API is a set of methods for managing transactions
 type API struct {
 	service *Service
+	log     *logger.Logger
 }
 
 // ProvideTransactionsAPI provides a new instance for wire
-func ProvideTransactionsAPI(t *Service) *API {
-	return &API{service: t}
+func ProvideTransactionsAPI(t *Service, log *logger.Logger) *API {
+	return &API{service: t, log: log}
 }
 
 // GetAll returns all transactions
@@ -47,6 +49,7 @@ func (a *API) AddTransaction(c *gin.Context) {
 	var data TransactionDTO
 
 	if err := c.ShouldBindJSON(&data); err != nil {
+		a.log.Warning(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

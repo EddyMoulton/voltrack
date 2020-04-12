@@ -42,19 +42,10 @@ func main() {
 
 	// HTTP
 	router := gin.Default()
+	router.OPTIONS("/*any", preflight)
 
 	router.Use(static.Serve("/", static.LocalFile("./views", true)))
-	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:8080"},
-		AllowMethods:     []string{"PUT", "PATCH", "GET", "DELETE"},
-		AllowHeaders:     []string{"Origin"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		AllowOriginFunc: func(origin string) bool {
-			return origin == "https://github.com"
-		},
-		MaxAge: 12 * time.Hour,
-	}))
+	router.Use(cors.Default())
 
 	api := router.Group("/api")
 	{
@@ -74,4 +65,10 @@ func main() {
 
 	go gocron.Start()
 	router.Run(":3000")
+}
+
+func preflight(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
+	c.JSON(http.StatusOK, struct{}{})
 }

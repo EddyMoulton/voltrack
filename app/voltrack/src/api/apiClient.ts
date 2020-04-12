@@ -15,6 +15,13 @@ export class ApiClient {
 
   constructor(baseUrl: string, axiosConfig?: AxiosRequestConfig | undefined) {
     this.baseUrl = baseUrl.replace(/\/$/, ""); // Ensure no trailing slash
+
+    if (!axiosConfig) {
+      axiosConfig = {};
+    }
+
+    axiosConfig!.headers = { ...axiosConfig?.headers, ...{ "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "access-control-allow-origin, access-control-allow-headers", "Content-Type": "text/plain" } }
+
     this.axios = axios.create(axiosConfig);
   }
 
