@@ -88,6 +88,7 @@ export default class AddTransactionComponent extends Vue {
     try {
       await this.apiClient.AddTransaction(dto);
       this.clearForm();
+      (this.$parent as any).close();
     } catch (e) {
       console.error("Failed to add transaction");
       console.error(e);
