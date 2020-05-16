@@ -14,3 +14,7 @@ type StockLog struct {
 	Stock     *Stock `gorm:"ForeignKey:StockCode;AssociationForeignKey:Code"`
 	Value     int64  // Dollars x10^4
 }
+
+func stockLogFromDto(dto StockLogDto) StockLog {
+	return StockLog{Date: dto.Date, StockCode: dto.StockCode, Value: dto.Value}
+}

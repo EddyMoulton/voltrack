@@ -33,11 +33,16 @@ func (r *Repository) getAll() ([]Stock, error) {
 }
 
 func (r *Repository) getAllCodes() ([]string, error) {
-	allStockCodes := []string{}
+	allStocks := []Stock{}
 
-	if err := r.db.Select("stock_code").Find(&allStockCodes).Error; err != nil {
+	if err := r.db.Select([]string{"code"}).Find(&allStocks).Error; err != nil {
 		r.log.Warning(err.Error())
-		return allStockCodes, err
+		return []string{}, err
+	}
+
+	allStockCodes := make([]string, len(allStocks))
+	for i := range allStocks {
+		allStockCodes[i] = allStocks[i].Code
 	}
 
 	return allStockCodes, nil

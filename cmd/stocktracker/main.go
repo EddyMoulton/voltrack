@@ -56,12 +56,14 @@ func main() {
 		})
 	}
 
-	api.GET("/stocks/current", transactionsAPI.GetCurrentStocks)
+	api.GET("/transactions/summaries", transactionsAPI.GetTransactionSummaries)
 	api.GET("/stocks/history", reportingAPI.GetOwnedStockLogs)
 	api.PUT("/reporting/generate", reportingAPI.GenerateSummaryLogs)
 	api.GET("/stocks/transactions", transactionsAPI.GetAll)
 	api.POST("/stocks/transactions", transactionsAPI.AddTransaction)
 	api.GET("/stocks", stocksAPI.GetAll)
+	api.GET("/stocks/current", transactionsAPI.GetCurrentStocks)
+	api.POST("/stocks/logs", stocksAPI.UploadStockHistory)
 
 	go gocron.Start()
 	router.Run(":3000")

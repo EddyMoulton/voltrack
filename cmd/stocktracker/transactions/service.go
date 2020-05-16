@@ -1,6 +1,8 @@
 package transactions
 
 import (
+	"sort"
+
 	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/logger"
 	"github.com/eddymoulton/stock-tracker/cmd/stocktracker/stocks"
 )
@@ -22,14 +24,7 @@ func (s *Service) GetAll() ([]StockTransaction, error) {
 	return s.repository.getAll()
 }
 
-// GetCurrentStocks returns all the stock objects in the database
-func (s *Service) GetCurrentStocks() ([]OwnedStockSummaryDTO, error) {
-	transactions, err := s.repository.getAllUnsoldStockTransactions()
-
-	if err != nil {
-		return make([]OwnedStockSummaryDTO, 0), err
-	}
-
+func (s *Service) getStockCodesInTransactions(transactions []StockTransaction) []string {
 	stockCodes := make([]string, 0)
 	for _, transaction := range transactions {
 		addCode := true
@@ -45,6 +40,19 @@ func (s *Service) GetCurrentStocks() ([]OwnedStockSummaryDTO, error) {
 		}
 	}
 
+	return stockCodes
+}
+
+// GetCurrentStocks returns all the stock objects in the database
+func (s *Service) GetCurrentStocks() ([]OwnedStockSummaryDTO, error) {
+	transactions, err := s.repository.getAllUnsoldStockTransactions()
+
+	if err != nil {
+		return make([]OwnedStockSummaryDTO, 0), err
+	}
+
+	stockCodes := s.getStockCodesInTransactions(transactions)
+
 	stockLogs := make([]stocks.StockLog, 0, len(stockCodes))
 	for _, code := range stockCodes {
 		log, err := s.stocksService.GetLatestStockLog(code)
@@ -56,7 +64,65 @@ func (s *Service) GetCurrentStocks() ([]OwnedStockSummaryDTO, error) {
 		stockLogs = append(stockLogs, log)
 	}
 
-	result := CreateStockSummaries(stockCodes, transactions, stockLogs)
+	result := createStockSummaries(stockCodes, transactions, stockLogs)
+
+	return result, nil
+}
+
+// GetTransactionSummaries returns all the stock objects in the database
+func (s *Service) GetTransactionSummaries() ([]TransactionSummaryDTO, error) {
+	transactions, err := s.repository.getAllUnsoldStockTransactions()
+
+	if err != nil {
+		return make([]TransactionSummaryDTO, 0), err
+	}
+
+	stockCodes := s.getStockCodesInTransactions(transactions)
+
+	summaries := make(map[string]map[int64]TransactionSummaryDTO)
+
+	for _, code := range stockCodes {
+		summaries[code] = make(map[int64]TransactionSummaryDTO)
+	}
+
+	latestStockLogs := make(map[string]int64)
+	for _, code := range stockCodes {
+		log, err := s.stocksService.GetLatestStockLog(code)
+
+		if err != nil {
+			return make([]TransactionSummaryDTO, 0), err
+		}
+
+		latestStockLogs[log.StockCode] = log.Value
+	}
+
+	for _, transaction := range transactions {
+		temp := TransactionSummaryDTO{}
+		if val, ok := summaries[transaction.StockCode][transaction.BuyTransactionID]; !ok {
+			temp.Code = transaction.StockCode
+			temp.Quantity = 1
+			temp.Cost = transaction.BuyTransaction.Cost
+			temp.Date = transaction.BuyTransaction.Date
+			temp.Value = latestStockLogs[transaction.StockCode]
+		} else {
+			temp = val
+			temp.Quantity++
+		}
+
+		summaries[transaction.StockCode][transaction.BuyTransactionID] = temp
+	}
+
+	result := make([]TransactionSummaryDTO, 0, len(summaries))
+
+	for _, stock := range summaries {
+		for _, value := range stock {
+			result = append(result, value)
+		}
+	}
+
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].Date.Before(result[j].Date)
+	})
 
 	return result, nil
 }

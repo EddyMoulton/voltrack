@@ -56,3 +56,31 @@ GET {{base_url}}/stocks
 
 ### Get Current Stocks
 GET {{base_url}}/stocks/current
+
+### Add Stock Logs
+POST {{base_url}}/stocks/logs
+content-type: application/json
+
+{
+	"logs":[{
+		"date":"2020-04-04T22:08:00Z",
+		"stockCode": "CDA",
+		"value": 15000
+		},{
+		"date":"2020-04-05T22:08:00Z",
+		"stockCode": "CDA",
+		"value": 16000
+		},{
+		"date":"2020-04-06T22:08:00Z",
+		"stockCode": "CDA",
+		"value": 17000
+		},{
+		"date":"2020-04-07T22:08:00Z",
+		"stockCode": "CDA",
+		"value": 20000
+		},{
+		"date":"2020-04-08T22:08:00Z",
+		"stockCode": "CDA",
+		"value": 14000
+		}]
+}

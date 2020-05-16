@@ -44,6 +44,19 @@ func (a *API) GetCurrentStocks(c *gin.Context) {
 	return
 }
 
+// GetTransactionSummaries returns all the transactions in the database that are currently owned along with their recent values
+func (a *API) GetTransactionSummaries(c *gin.Context) {
+	stocks, err := a.service.GetTransactionSummaries()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"transactions": stocks})
+	return
+}
+
 // AddTransaction creates a new set of transactions
 func (a *API) AddTransaction(c *gin.Context) {
 	var data TransactionDTO

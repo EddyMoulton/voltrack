@@ -1,14 +1,17 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { OwnedStockViewModel } from '@/models/OwnedStockViewModel';
 import { AddTransactionDto } from './models/AddTransactionDto';
+import { TransactionSummaryViewModel } from '@/models/TransactionSummaryViewModel';
+import { TransactionSummaryDto } from '@/models/TransactionSummaryDto';
 
 export class ApiClient {
   private readonly getOwnedStockLogsUrl = "/stocks/history";
-  private readonly GenerateSummaryLogsUrl = "/reporting/generate";
-  private readonly GetAllTransactionsUrl = "/stocks/transactions";
-  private readonly AddTransactionUrl = "/stocks/transactions";
-  private readonly GetAllStocksUrl = "/stocks";
-  private readonly GetCurrentStocksUrl = "/stocks/current";
+  private readonly generateSummaryLogsUrl = "/reporting/generate";
+  private readonly getAllTransactionsUrl = "/stocks/transactions";
+  private readonly addTransactionUrl = "/stocks/transactions";
+  private readonly getAllStocksUrl = "/stocks";
+  private readonly getCurrentStocksUrl = "/stocks/current";
+  private readonly getTransactionSummariesUrl = "/transactions/summaries"
 
   private axios: AxiosInstance;
   private baseUrl: string;
@@ -26,35 +29,35 @@ export class ApiClient {
   }
 
   public getOwnedStockLogs() {
-    return this.axios.get(this.baseUrl + this.getOwnedStockLogsUrl)
+    return this.axios.get(this.baseUrl + this.getOwnedStockLogsUrl);
   }
 
   public GenerateSummaryLogs() {
-    return this.axios.get(this.baseUrl + this.GenerateSummaryLogsUrl)
+    return this.axios.get(this.baseUrl + this.generateSummaryLogsUrl);
   }
 
   public GetAllTransactions() {
-    return this.axios.get(this.baseUrl + this.GetAllTransactionsUrl)
+    return this.axios.get(this.baseUrl + this.getAllTransactionsUrl);
   }
 
   public AddTransaction(dto: AddTransactionDto) {
-    return this.axios.post(this.baseUrl + this.AddTransactionUrl, dto)
+    return this.axios.post(this.baseUrl + this.addTransactionUrl, dto);
   }
 
   public GetAllStocks() {
-    return this.axios.get(this.baseUrl + this.GetAllStocksUrl)
+    return this.axios.get(this.baseUrl + this.getAllStocksUrl);
   }
 
   public GetCurrentStocks(): Promise<OwnedStockViewModel[]> {
-    return this.axios.get(this.baseUrl + this.GetCurrentStocksUrl).then((result) => {
+    return this.axios.get(this.baseUrl + this.getCurrentStocksUrl).then((result) => {
       if (result.status == 200) {
         return result.data.currentStocks.map((data: OwnedStockViewModel) => {
           const entry = data as OwnedStockViewModel;
 
           entry.currentValue = entry.currentValue / 10000;
-          entry.totalValue = entry.totalValue / 10000;
           entry.paidValue = entry.paidValue / 10000;
           entry.difference = entry.difference / 10000;
+          entry.totalDividends = entry.totalDividends / 10000;
 
           return entry;
         });
@@ -62,5 +65,29 @@ export class ApiClient {
         throw Error(result.statusText);
       }
     })
+  }
+
+  public async GetTransactionSummaries(): Promise<TransactionSummaryViewModel[]> {
+    const result = await this.axios.get(this.baseUrl + this.getTransactionSummariesUrl)
+
+    console.log(result.data.transactions)
+
+    const totalCost = result.data.transactions.reduce((total: number, t: TransactionSummaryDto) => {
+      return total + t.cost! || 0;
+    });
+
+    const a = result.data.transactions.map((t: TransactionSummaryDto) => {
+      return new TransactionSummaryViewModel(
+        t.code!,
+        t.quantity!,
+        t.cost! * t.quantity!,
+        t.value! * t.quantity!,
+        t.dividendValue!,
+        new Date(t.date!),
+        totalCost
+      );
+    });
+    console.log(a)
+    return a
   }
 }

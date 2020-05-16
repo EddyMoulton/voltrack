@@ -10,11 +10,11 @@
         </button>
       </div>
     </div>
-    <my-stock-component></my-stock-component
-    ><b-modal :active.sync="isModalActive">
+    <my-stocks-component />
+    <b-modal :active.sync="isModalActive">
       <div class="card">
         <div class="card-content">
-          <add-transaction-component></add-transaction-component>
+          <add-transaction-component />
         </div>
       </div>
     </b-modal>
@@ -24,12 +24,15 @@
 <script>
 // @ is an alias to /src
 
-import MyStockComponent from "../components/MyStocksComponent.vue";
+import MyStocksComponent from "../components/MyStocksComponent.vue";
 import AddTransactionComponent from "../components/AddTransactionComponent.vue";
 
 export default {
   name: "Home",
-  components: { AddTransactionComponent, MyStockComponent },
+  components: {
+    AddTransactionComponent,
+    MyStocksComponent
+  },
   data() {
     return {
       isModalActive: false

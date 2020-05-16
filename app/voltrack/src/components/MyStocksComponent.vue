@@ -1,14 +1,14 @@
 <template>
   <div>
     <h2>Portfolio</h2>
-    <b-table :data="ownedStocks" :columns="columns">
+    <b-table :data="ownedStocks">
       <template slot-scope="props">
         <b-table-column field="code" label="Stock Code">
           {{ props.row.code }}
         </b-table-column>
 
-        <b-table-column field="quanity" label="Quantity">
-          {{ props.row.quanity }}
+        <b-table-column field="quantity" label="Quantity">
+          {{ props.row.quantity }}
         </b-table-column>
 
         <b-table-column field="currentValue" label="Value">
@@ -25,6 +25,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { TransactionSummaryViewModel } from "../models/TransactionSummaryViewModel";
 import { OwnedStockViewModel } from "../models/OwnedStockViewModel";
 import { ApiClient } from "../api/apiClient";
 
