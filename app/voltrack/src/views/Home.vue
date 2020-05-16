@@ -6,7 +6,13 @@
           class="button is-primary is-medium"
           @click="isModalActive = true"
         >
-          Add Transaction
+          Add transaction
+        </button>
+        <button
+          class="button is-primary is-medium"
+          @click="isUploadModalActive = true"
+        >
+          Add manual logs
         </button>
       </div>
     </div>
@@ -18,6 +24,13 @@
         </div>
       </div>
     </b-modal>
+    <b-modal :active.sync="isUploadModalActive">
+      <div class="card">
+        <div class="card-content">
+          <upload-stock-logs-component />
+        </div>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -26,16 +39,19 @@
 
 import MyStocksComponent from "../components/MyStocksComponent.vue";
 import AddTransactionComponent from "../components/AddTransactionComponent.vue";
+import UploadStockLogsComponent from "../components/UploadStockLogsComponent.vue";
 
 export default {
   name: "Home",
   components: {
     AddTransactionComponent,
-    MyStocksComponent
+    MyStocksComponent,
+    UploadStockLogsComponent
   },
   data() {
     return {
-      isModalActive: false
+      isModalActive: false,
+      isUploadModalActive: false
     };
   }
 };

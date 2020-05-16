@@ -78,13 +78,13 @@ func (a *API) UploadStockHistory(c *gin.Context) {
 		return
 	}
 
-	err := a.service.AddStockLogs(data.Logs)
+	count, err := a.service.AddStockLogs(data.Logs)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{})
+	c.JSON(http.StatusOK, gin.H{"addedEntries": count})
 	return
 }

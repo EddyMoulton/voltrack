@@ -87,21 +87,21 @@ func (s *Service) LogStocks(stockCodes []string) {
 }
 
 // AddStockLogs create StockLogs for each passed data set
-func (s *Service) AddStockLogs(data []StockLogDto) error {
+func (s *Service) AddStockLogs(data []StockLogDto) (int, error) {
 	logs := make([]StockLog, len(data))
 
 	existingStocks, err := s.GetAllCodes()
-	fmt.Printf("%v", existingStocks)
 
 	if err != nil {
 		s.log.Error((err.Error()))
-		return err
+		return 0, err
 	}
 
 	index := 0
 	for _, newLog := range data {
 		if (newLog.Date == time.Time{} || time.Now().Before(newLog.Date) || newLog.Value == 0) {
 			s.log.Warning("Entry in uploaded log data is missing required information and will be skipped")
+			s.log.Debug(fmt.Sprintf("Data: %+v", newLog))
 		} else {
 			stockCodeExists := false
 
@@ -116,18 +116,18 @@ func (s *Service) AddStockLogs(data []StockLogDto) error {
 				logs[index] = stockLogFromDto(newLog)
 				index++
 			} else {
-				s.log.Warning("Failed to add stock log for stock that is not in the system, skipping line")
+				s.log.Warning(fmt.Sprintf("Failed to add stock log for stock (%s) that is not in the system, skipping line", newLog.StockCode))
 			}
 		}
 	}
 
 	if index > 0 {
 		logs = logs[0:index]
-		return s.repository.addStockLogs(logs)
+		return len(logs), s.repository.addStockLogs(logs)
 	}
 
 	s.log.Error("No valid stock logs to save to database")
-	return fmt.Errorf("No valid entries to save")
+	return 0, fmt.Errorf("No valid entries to save")
 }
 
 func (s *Service) GetLatestStockLog(stockCode string) (StockLog, error) {

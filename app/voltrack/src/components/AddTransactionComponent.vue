@@ -34,7 +34,12 @@
     <b-field label="Fees">
       <b-numberinput v-model="fees" step="0.01" />
     </b-field>
-    <b-button type="is-primary" @click="addTransaction">Add</b-button>
+    <b-button
+      type="is-primary"
+      @click="addTransaction"
+      :disabled="actionInProgress"
+      >Add</b-button
+    >
   </div>
 </template>
 
@@ -51,6 +56,7 @@ export default class AddTransactionComponent extends Vue {
   private action = "buy";
   private cost = 0;
   private fees = 0;
+  private actionInProgress = false;
 
   private apiClient: ApiClient;
 
@@ -69,6 +75,7 @@ export default class AddTransactionComponent extends Vue {
   }
 
   async addTransaction() {
+    this.actionInProgress = true;
     const dto = new AddTransactionDto();
 
     if (this.action === "buy") {
@@ -90,8 +97,14 @@ export default class AddTransactionComponent extends Vue {
       this.clearForm();
       (this.$parent as any).close();
     } catch (e) {
+      this.$buefy.toast.open({
+        message: "Failed to add transaction",
+        type: "is-danger"
+      });
       console.error("Failed to add transaction");
       console.error(e);
+    } finally {
+      this.actionInProgress = false;
     }
   }
 }

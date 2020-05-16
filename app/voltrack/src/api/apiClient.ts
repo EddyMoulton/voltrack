@@ -3,6 +3,7 @@ import { OwnedStockViewModel } from '@/models/OwnedStockViewModel';
 import { AddTransactionDto } from './models/AddTransactionDto';
 import { TransactionSummaryViewModel } from '@/models/TransactionSummaryViewModel';
 import { TransactionSummaryDto } from '@/models/TransactionSummaryDto';
+import { StockLogViewModel } from '@/models/StockLogViewModel';
 
 export class ApiClient {
   private readonly getOwnedStockLogsUrl = "/stocks/history";
@@ -11,6 +12,7 @@ export class ApiClient {
   private readonly addTransactionUrl = "/stocks/transactions";
   private readonly getAllStocksUrl = "/stocks";
   private readonly getCurrentStocksUrl = "/stocks/current";
+  private readonly addStockLogsUrl = "/stocks/logs";
   private readonly getTransactionSummariesUrl = "/transactions/summaries"
 
   private axios: AxiosInstance;
@@ -89,5 +91,25 @@ export class ApiClient {
     });
     console.log(a)
     return a
+  }
+
+  public async AddStockLogs(logs: StockLogViewModel[]) {
+    logs.forEach((log) => {
+      console.log(log.date)
+      if (log.date) {
+        console.log(log.date)
+        const val = new Date(log.date);
+
+        console.log(val)
+
+        log.date = val;
+      }
+
+      if (log.value) {
+        log.value = Math.floor(log.value * 10000);
+      }
+    })
+
+    return await this.axios.post(this.baseUrl + this.addStockLogsUrl, { logs })
   }
 }
