@@ -1,5 +1,8 @@
 FROM golang:latest
 
+LABEL maintainer="Eddy Moulton <eddymoulton@gmail.com>"
+ADD VERSION .
+
 WORKDIR /app
 ADD VERSION .
 

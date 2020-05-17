@@ -1,28 +1,28 @@
 #!/bin/bash
 
-script_directory=$(dirname ${BASH_SOURCE[0]})
-src_directory=$(dirname "$script_directory")
+# Default options
+target="all"
+env="development"
 
-source $script_directory/variables.sh
+# Handle arugments and loading common settings
+/bin/bash common.sh
 
-production_mode=0
+if [ "$target" = "all" ] || [ "$target" = "api" ]; then
+  if [ "$env" = "development" ]; then
+    echo "Building development API image"
+    docker build -f "$script_directory/dockerfile.api.development" -t $REGISTRY/$IMAGE_API:latest $src_directory
+  elif [ "$env" = "production" ]; then
+    echo "Building production API image"
+    docker build -f "$script_directory/dockerfile.api.production" -t $REGISTRY/$IMAGE_API:latest $src_directory
+  fi
+fi
 
-while test $# -gt 0; do
-  case "$1" in
-  --production)
-    production_mode=1
-    ;;
-  *)
-    echo "argument $1"
-    ;;
-  esac
-  shift
-done
-
-if [ $production_mode -eq 1 ]; then
-  echo "Building production image"
-  docker build -f "$src_directory/dockerfile.production" -t $REGISTRY/$IMAGE:latest $src_directory
-else
-  echo "Building development image"
-  docker build -f "$src_directory/dockerfile" -t $REGISTRY/$IMAGE:latest $src_directory
+if [ "$target" = "all" ] || [ "$target" = "web" ]; then
+  if [ "$env" = "development" ]; then
+    echo "Building development web app image"
+    docker build -f "$script_directory/dockerfile.web.development" -t $REGISTRY/$IMAGE_WEB:latest $src_directory
+  elif [ "$env" = "production" ]; then
+    echo "Building production web app image"
+    docker build -f "$script_directory/dockerfile.web.production" -t $REGISTRY/$IMAGE_WEB:latest $src_directory
+  fi
 fi
