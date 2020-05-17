@@ -1,6 +1,7 @@
 FROM golang:latest
 
 WORKDIR /app
+ADD VERSION .
 
 COPY ./ /app
 
