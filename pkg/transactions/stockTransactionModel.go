@@ -1,7 +1,7 @@
 package transactions
 
 import (
-	"github.com/eddymoulton/voltrack/cmd/voltrack-api/stocks"
+	"github.com/eddymoulton/voltrack/pkg/stocks"
 	"github.com/jinzhu/gorm"
 )
 

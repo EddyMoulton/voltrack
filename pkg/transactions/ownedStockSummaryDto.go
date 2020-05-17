@@ -3,7 +3,7 @@ package transactions
 import (
 	"sort"
 
-	"github.com/eddymoulton/voltrack/cmd/voltrack-api/stocks"
+	"github.com/eddymoulton/voltrack/pkg/stocks"
 )
 
 // OwnedStockSummaryDTO is used when returning summary data about an owned stock

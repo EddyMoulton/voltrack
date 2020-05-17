@@ -3,8 +3,8 @@ package transactions
 import (
 	"sort"
 
-	"github.com/eddymoulton/voltrack/cmd/voltrack-api/logger"
-	"github.com/eddymoulton/voltrack/cmd/voltrack-api/stocks"
+	"github.com/eddymoulton/voltrack/pkg/logger"
+	"github.com/eddymoulton/voltrack/pkg/stocks"
 )
 
 // Service is an object that provides methods for altering or manipulating stock transactions

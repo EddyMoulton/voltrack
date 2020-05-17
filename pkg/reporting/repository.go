@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/eddymoulton/voltrack/cmd/voltrack-api/helpers"
-	"github.com/eddymoulton/voltrack/cmd/voltrack-api/logger"
+	"github.com/eddymoulton/voltrack/pkg/helpers"
+	"github.com/eddymoulton/voltrack/pkg/logger"
 	"github.com/jinzhu/gorm"
 )
 

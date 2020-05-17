@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"github.com/eddymoulton/voltrack/cmd/voltrack-api/reporting"
-	"github.com/eddymoulton/voltrack/cmd/voltrack-api/stocks"
-	"github.com/eddymoulton/voltrack/cmd/voltrack-api/transactions"
+	"github.com/eddymoulton/voltrack/pkg/reporting"
+	"github.com/eddymoulton/voltrack/pkg/stocks"
+	"github.com/eddymoulton/voltrack/pkg/transactions"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
