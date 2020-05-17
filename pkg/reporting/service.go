@@ -4,10 +4,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/eddymoulton/stock-tracker/cmd/voltrack-api/helpers"
-	"github.com/eddymoulton/stock-tracker/cmd/voltrack-api/logger"
-	"github.com/eddymoulton/stock-tracker/cmd/voltrack-api/stocks"
-	"github.com/eddymoulton/stock-tracker/cmd/voltrack-api/transactions"
+	"github.com/eddymoulton/voltrack/cmd/voltrack-api/helpers"
+	"github.com/eddymoulton/voltrack/cmd/voltrack-api/logger"
+	"github.com/eddymoulton/voltrack/cmd/voltrack-api/stocks"
+	"github.com/eddymoulton/voltrack/cmd/voltrack-api/transactions"
 )
 
 // Service is an object that provides methods for altering or manipulating reports

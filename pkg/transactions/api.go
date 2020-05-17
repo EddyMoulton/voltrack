@@ -3,7 +3,7 @@ package transactions
 import (
 	"net/http"
 
-	"github.com/eddymoulton/stock-tracker/cmd/voltrack-api/logger"
+	"github.com/eddymoulton/voltrack/cmd/voltrack-api/logger"
 	"github.com/gin-gonic/gin"
 )
 

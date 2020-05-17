@@ -6,10 +6,10 @@
 package main
 
 import (
-	"github.com/eddymoulton/stock-tracker/cmd/voltrack-api/logger"
-	"github.com/eddymoulton/stock-tracker/cmd/voltrack-api/reporting"
-	"github.com/eddymoulton/stock-tracker/cmd/voltrack-api/stocks"
-	"github.com/eddymoulton/stock-tracker/cmd/voltrack-api/transactions"
+	"github.com/eddymoulton/voltrack/cmd/voltrack-api/logger"
+	"github.com/eddymoulton/voltrack/cmd/voltrack-api/reporting"
+	"github.com/eddymoulton/voltrack/cmd/voltrack-api/stocks"
+	"github.com/eddymoulton/voltrack/cmd/voltrack-api/transactions"
 	"github.com/golobby/config"
 	"github.com/jinzhu/gorm"
 )

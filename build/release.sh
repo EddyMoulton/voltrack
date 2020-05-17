@@ -1,12 +1,13 @@
 #!/bin/bash
 
-source variables.sh
+script_directory=$(dirname ${BASH_SOURCE[0]})
+source $script_directory/variables.sh
 
 # ensure we're up to date
 #git pull
 
 # bump version
-docker run --rm -v "$PWD":/app treeder/bump patch
+docker run --rm -v "$PWD/..":/app treeder/bump patch
 version=$(cat VERSION)
 echo "version: $version"
 

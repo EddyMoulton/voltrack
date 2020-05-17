@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/eddymoulton/stock-tracker/cmd/voltrack-api/logger"
+	"github.com/eddymoulton/voltrack/cmd/voltrack-api/logger"
 )
 
 // Exchanges is a set of methods for interacting with stock exchanges

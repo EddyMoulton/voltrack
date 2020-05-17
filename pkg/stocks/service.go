@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/eddymoulton/stock-tracker/cmd/voltrack-api/logger"
+	"github.com/eddymoulton/voltrack/cmd/voltrack-api/logger"
 )
 
 // Service is an object that provides methods for altering or manipulating stocks

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/eddymoulton/stock-tracker/cmd/voltrack-api/helpers"
-	"github.com/eddymoulton/stock-tracker/cmd/voltrack-api/logger"
+	"github.com/eddymoulton/voltrack/cmd/voltrack-api/helpers"
+	"github.com/eddymoulton/voltrack/cmd/voltrack-api/logger"
 	"github.com/jinzhu/gorm"
 )
 
