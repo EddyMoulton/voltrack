@@ -9,4 +9,4 @@ RUN go mod download
 
 RUN go get github.com/githubnemo/CompileDaemon
 
-ENTRYPOINT CompileDaemon --build="go build ./cmd/voltrack-api" --command="./voltrack-api"
+ENTRYPOINT CompileDaemon --build="go build -o output/main ./cmd/voltrack-api" --command="./output/main"

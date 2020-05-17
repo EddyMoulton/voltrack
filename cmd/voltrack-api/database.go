@@ -12,7 +12,7 @@ import (
 
 // InitializeDatabase opens SQLite DB and migrates tables
 func InitializeDatabase() *gorm.DB {
-	db, err := gorm.Open("sqlite3", "voltrack-api.db")
+	db, err := gorm.Open("sqlite3", "db/voltrack.db")
 
 	if err != nil {
 		log.Fatal(err)

@@ -17,4 +17,5 @@
 # Custom
 voltrack-api
 !voltrack-api/
-voltrack-api.db
+db/voltrack.db
+output/*
