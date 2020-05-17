@@ -16,7 +16,7 @@ RUN go mod download
 COPY ./cmd .
 
 # Build the Go app
-RUN go build -o main ./stocktracker
+RUN go build -o main ./voltrack-api
 
 # Command to run the executable
 CMD ["./main"]

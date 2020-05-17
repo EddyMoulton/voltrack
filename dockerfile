@@ -9,4 +9,4 @@ RUN go mod download
 
 RUN go get github.com/githubnemo/CompileDaemon
 
-ENTRYPOINT CompileDaemon --build="go build ./cmd/stocktracker" --command="./stocktracker"
+ENTRYPOINT CompileDaemon --build="go build ./cmd/voltrack-api" --command="./voltrack-api"

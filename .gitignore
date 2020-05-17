@@ -15,6 +15,6 @@
 # vendor/
 
 # Custom
-stocktracker
-!stocktracker/
-stocktracker.db
+voltrack-api
+!voltrack-api/
+voltrack-api.db
