@@ -19,3 +19,4 @@ voltrack-api
 !voltrack-api/
 db/voltrack.db
 output/*
+temp/*

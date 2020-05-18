@@ -1,21 +1,35 @@
 version: "3.7"
 services:
   api:
+    container_name: voltrack_api
     build:
       context: ./
       dockerfile: build/dockerfile.api.development
     ports:
-      - '3000:3000'
+      - "3000:3000"
     volumes:
       - ./:/app
 
   web:
+    container_name: voltrack_web
     build:
       context: .
-      target: 'develop-stage'
+      target: "develop-stage"
       dockerfile: build/dockerfile.web
     ports:
-    - '8080:8080'
+      - "8080:8080"
     volumes:
-    - './web:/app'
+      - "./web:/app"
     command: /bin/sh -c "yarn serve"
+
+  mysql:
+    container_name: voltrack_sql
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: "test_pass"
+      MYSQL_USER: "test"
+      MYSQL_PASS: "pass"
+    volumes:
+      - ./temp/mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"

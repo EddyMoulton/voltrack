@@ -7,12 +7,12 @@ import (
 	"github.com/eddymoulton/voltrack/pkg/stocks"
 	"github.com/eddymoulton/voltrack/pkg/transactions"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 // InitializeDatabase opens SQLite DB and migrates tables
 func InitializeDatabase() *gorm.DB {
-	db, err := gorm.Open("sqlite3", "db/voltrack.db")
+	db, err := gorm.Open("mysql", "test_user:password@(10.1.1.11)/voltrack_dev?charset=utf8&parseTime=True&loc=Local")
 
 	if err != nil {
 		log.Fatal(err)
