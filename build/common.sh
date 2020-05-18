@@ -1,8 +1,3 @@
-script_directory=$(dirname ${BASH_SOURCE[0]})
-src_directory=$(dirname "$script_directory")
-
-source $script_directory/variables.sh
-
 while test $# -gt 0; do
   case "$1" in
   -t) ;&

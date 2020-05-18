@@ -4,22 +4,30 @@
 target="all"
 env="production"
 
+script_directory=$(dirname ${BASH_SOURCE[0]})
+src_directory=$(dirname "$script_directory")
+
+source $script_directory/variables.sh
+
 # Handle arugments and loading common settings
-/bin/bash common.sh
+/bin/bash $script_directory/common.sh
 
 if [ "$env" != "production" ]; then
   echo "May only release for production"
   exit 1
 fi
 
+starting_dir="$PWD"
+cd $src_directory
+
 # Increment version
-current_version=$(cat $src_directory/VERSION)
-echo $current_version | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF+1)%(10^length($NF))); print}' >$src_directory/VERSION
-version=$(cat $src_directory/VERSION)
+current_version=$(cat VERSION)
+echo $current_version | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF+1)%(10^length($NF))); print}' >VERSION
+version=$(cat VERSION)
 echo "version: $version"
 
 # Run build
-$script_directory/build.sh --environment "$env" --target "$target"
+build/build.sh --environment "$env" --target "$target"
 
 # Tag in git
 git add -A
@@ -41,3 +49,5 @@ if [ "$target" = "all" ] || [ "$target" = "web" ]; then
   docker push $REGISTRY/$IMAGE_WEB:latest
   docker push $REGISTRY/$IMAGE_WEB:$version
 fi
+
+cd $starting_dir
