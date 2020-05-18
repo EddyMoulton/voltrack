@@ -1,0 +1,21 @@
+version: "3.7"
+services:
+  api:
+    build:
+      context: ./
+      dockerfile: build/dockerfile.api.development
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./:/app
+
+  web:
+    build:
+      context: .
+      target: 'develop-stage'
+      dockerfile: build/dockerfile.web
+    ports:
+    - '8080:8080'
+    volumes:
+    - './web:/app'
+    command: /bin/sh -c "yarn serve"

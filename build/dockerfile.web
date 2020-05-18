@@ -1,0 +1,13 @@
+FROM node:lts-alpine as develop-stage
+WORKDIR /app
+COPY ./web/package.json ./
+COPY ./web/yarn.lock ./
+RUN yarn install
+COPY ./web/ .
+
+FROM develop-stage as build-stage
+RUN yarn build
+
+FROM nginx:stable-alpine as production-stage
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+CMD ["nginx", "-g", "daemon off;"]
