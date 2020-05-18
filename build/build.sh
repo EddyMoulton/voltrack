@@ -1,19 +1,24 @@
 #!/bin/bash
 
-# Default options
-target="all"
-env="development"
-
 script_directory=$(dirname ${BASH_SOURCE[0]})
 src_directory=$(dirname "$script_directory")
 
-source $script_directory/variables.sh
+source $script_directory/common.sh
 
-# Handle arugments and loading common settings
-/bin/bash $script_directory/common.sh
+# Parse aguments with defaults: target = all, env = development
+parse_args $@
 
-starting_dir="$PWD"
+if [ -z $target ]; then
+  target="all"
+fi
+
+if [ -z $env ]; then
+  env="development"
+fi
+
 cd $src_directory
+
+echo $target
 
 if [ "$target" = "all" ] || [ "$target" = "api" ]; then
   if [ "$env" = "development" ]; then
@@ -35,4 +40,4 @@ if [ "$target" = "all" ] || [ "$target" = "web" ]; then
   fi
 fi
 
-cd $starting_dir
+cd -

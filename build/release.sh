@@ -1,23 +1,26 @@
 #!/bin/bash
 
-# Default options
-target="all"
-env="production"
-
 script_directory=$(dirname ${BASH_SOURCE[0]})
 src_directory=$(dirname "$script_directory")
 
-source $script_directory/variables.sh
+source $script_directory/common.sh
 
-# Handle arugments and loading common settings
-/bin/bash $script_directory/common.sh
+# Parse aguments with defaults: target = all, env = production
+parse_args $@
+
+if [ -z $target ]; then
+  target="all"
+fi
+
+if [ -z $env ]; then
+  env="production"
+fi
 
 if [ "$env" != "production" ]; then
   echo "May only release for production"
   exit 1
 fi
 
-starting_dir="$PWD"
 cd $src_directory
 
 # Increment version
@@ -50,4 +53,4 @@ if [ "$target" = "all" ] || [ "$target" = "web" ]; then
   docker push $REGISTRY/$IMAGE_WEB:$version
 fi
 
-cd $starting_dir
+cd -
