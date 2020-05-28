@@ -61,6 +61,7 @@ func main() {
 	api.PUT("/reporting/generate", reportingAPI.GenerateSummaryLogs)
 	api.GET("/stocks/transactions", transactionsAPI.GetAll)
 	api.POST("/stocks/transactions", transactionsAPI.AddTransaction)
+	api.POST("/stocks/transactions/bulk", transactionsAPI.UploadTransactionHistory)
 	api.GET("/stocks", stocksAPI.GetAll)
 	api.GET("/stocks/current", transactionsAPI.GetCurrentStocks)
 	api.POST("/stocks/logs", stocksAPI.UploadStockHistory)

@@ -1,7 +1,9 @@
 package transactions
 
 import (
+	"fmt"
 	"sort"
+	"time"
 
 	"github.com/eddymoulton/voltrack/pkg/logger"
 	"github.com/eddymoulton/voltrack/pkg/stocks"
@@ -127,13 +129,9 @@ func (s *Service) GetTransactionSummaries() ([]TransactionSummaryDTO, error) {
 	return result, nil
 }
 
-// AddBuyTransaction adds a new set of transactions to the repositoryervice
+// AddBuyTransaction adds a new set of transactions to the repository
 func (s *Service) AddBuyTransaction(transactionDTO TransactionDTO) {
-	stock, err := s.stocksService.Find(transactionDTO.StockCode)
-
-	if err != nil {
-		stock, err = s.stocksService.AddStock(transactionDTO.StockCode)
-	}
+	stock, err := s.stocksService.AddStock(transactionDTO.StockCode)
 
 	if err == nil {
 		transactions := transactionDTO.Map()
@@ -151,7 +149,43 @@ func (s *Service) AddBuyTransaction(transactionDTO TransactionDTO) {
 	}
 }
 
-// AddSellTransaction adds a new set of transactions to the repositoryervice
+// AddBuyTransactions adds a new set of transactions to the repository
+func (s *Service) AddBuyTransactions(data []TransactionDTO) (int, error) {
+
+	allStockTransactions := []StockTransaction{}
+	for _, transactionDto := range data {
+		if (transactionDto.Date == time.Time{} || time.Now().Before(transactionDto.Date) || transactionDto.Cost == 0 || transactionDto.StockCode == "" || transactionDto.Quantity == 0) {
+			s.log.Warning("Entry in uploaded log data is missing required information and will be skipped")
+			s.log.Debug(fmt.Sprintf("Data: %+v", transactionDto))
+		} else {
+			stock, err := s.stocksService.AddStock(transactionDto.StockCode)
+
+			if err == nil {
+				transactions := transactionDto.Map()
+
+				stockTransactions := make([]StockTransaction, len(transactions))
+				for i, transaction := range transactions {
+					stockTransaction := StockTransaction{}
+
+					stockTransaction.BuyNew(&stock, &transaction)
+
+					stockTransactions[i] = stockTransaction
+				}
+
+				allStockTransactions = append(allStockTransactions, stockTransactions...)
+			}
+		}
+	}
+
+	if len(allStockTransactions) > 0 {
+		return len(allStockTransactions), s.repository.addTransactions(allStockTransactions)
+	}
+
+	s.log.Error("No valid stock logs to save to database")
+	return 0, fmt.Errorf("No valid entries to save")
+}
+
+// AddSellTransaction adds a new set of transactions to the repository
 func (s *Service) AddSellTransaction(transactionDTO TransactionDTO) {
 	transactions := transactionDTO.Map()
 

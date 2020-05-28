@@ -76,3 +76,23 @@ func (a *API) AddTransaction(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{})
 	return
 }
+
+// UploadTransactionHistory bulk creates transaction
+func (a *API) UploadTransactionHistory(c *gin.Context) {
+	var data TransactionListDto
+
+	if err := c.ShouldBindJSON(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	count, err := a.service.AddBuyTransactions(data.Transactions)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"addedEntries": count})
+	return
+}

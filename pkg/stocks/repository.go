@@ -69,7 +69,7 @@ func (r *Repository) add(stock Stock) (Stock, error) {
 		return Stock{}, fmt.Errorf(errorMessage)
 	}
 
-	if err := r.db.Create(&stock).Error; err != nil {
+	if err := r.db.FirstOrCreate(&stock).Error; err != nil {
 		r.log.Error(err.Error())
 		return Stock{}, err
 	}
@@ -84,7 +84,7 @@ func (r *Repository) addStockLogs(logs []StockLog) error {
 	tx := r.db.Begin()
 
 	for _, log := range logs {
-		if err := tx.Create(&log).Error; err != nil {
+		if err := tx.FirstOrCreate(&log).Error; err != nil {
 			r.log.Error(err.Error())
 			r.log.DbAccess(fmt.Sprintf("Failed adding log for %s, rolling back", log.StockCode))
 			tx.Rollback()
