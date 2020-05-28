@@ -10,6 +10,7 @@ export class ApiClient {
   private readonly generateSummaryLogsUrl = "/reporting/generate";
   private readonly getAllTransactionsUrl = "/stocks/transactions";
   private readonly addTransactionUrl = "/stocks/transactions";
+  private readonly addTransactionsUrl = "/stocks/transactions/bulk";
   private readonly getAllStocksUrl = "/stocks";
   private readonly getCurrentStocksUrl = "/stocks/current";
   private readonly addStockLogsUrl = "/stocks/logs";
@@ -46,6 +47,25 @@ export class ApiClient {
     return this.axios.post(this.baseUrl + this.addTransactionUrl, dto);
   }
 
+  public AddTransactions(data: AddTransactionDto[]) {
+    data.forEach((transaction) => {
+      if (transaction.date) {
+        const val = new Date(transaction.date);
+        transaction.date = val;
+      }
+
+      if (transaction.fee) {
+        transaction.fee = Math.floor(transaction.fee * 10000);
+      }
+
+      if (transaction.cost) {
+        transaction.cost = Math.floor(transaction.cost * 10000);
+      }
+    })
+
+    return this.axios.post(this.baseUrl + this.addTransactionsUrl, { transactions: data });
+  }
+
   public GetAllStocks() {
     return this.axios.get(this.baseUrl + this.getAllStocksUrl);
   }
@@ -72,36 +92,33 @@ export class ApiClient {
   public async GetTransactionSummaries(): Promise<TransactionSummaryViewModel[]> {
     const result = await this.axios.get(this.baseUrl + this.getTransactionSummariesUrl)
 
-    console.log(result.data.transactions)
+    const totalCost = result.data.transactions
+      .map((t: TransactionSummaryDto) => t.cost)
+      .reduce((total: number, cost: number) => {
+        return total + cost!;
+      });
 
-    const totalCost = result.data.transactions.reduce((total: number, t: TransactionSummaryDto) => {
-      return total + t.cost! || 0;
-    });
-
-    const a = result.data.transactions.map((t: TransactionSummaryDto) => {
-      return new TransactionSummaryViewModel(
+    const data = result.data.transactions.map((t: TransactionSummaryDto) => {
+      const viewModel = new TransactionSummaryViewModel();
+      viewModel.generate(
         t.code!,
         t.quantity!,
-        t.cost! * t.quantity!,
-        t.value! * t.quantity!,
-        t.dividendValue!,
+        t.cost! * t.quantity! / 10000,
+        t.value! * t.quantity! / 10000,
+        t.dividendValue! / 10000,
         new Date(t.date!),
-        totalCost
+        totalCost / 10000
       );
+      return viewModel;
     });
-    console.log(a)
-    return a
+
+    return data
   }
 
   public async AddStockLogs(logs: StockLogViewModel[]) {
     logs.forEach((log) => {
-      console.log(log.date)
       if (log.date) {
-        console.log(log.date)
         const val = new Date(log.date);
-
-        console.log(val)
-
         log.date = val;
       }
 

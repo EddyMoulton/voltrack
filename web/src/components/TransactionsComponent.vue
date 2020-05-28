@@ -5,7 +5,7 @@
       <b-tab-item label="Capital">
         <b-table
           :data="transactions"
-          :row-class="(row, index) => row.isSold && 'is-disabled'"
+          :row-class="(row, index) => 'is-disabled'"
         >
           <template slot-scope="props">
             <b-table-column field="purchaseDate" label="Purchase Date">
@@ -42,7 +42,7 @@
       <b-tab-item label="Dividends">
         <b-table
           :data="transactions"
-          :row-class="(row, index) => row.isSold && 'is-disabled'"
+          :row-class="(row, index) => 'is-disabled'"
         >
           <template slot-scope="props">
             <b-table-column field="purchaseDate" label="Purchase Date">
@@ -79,7 +79,7 @@
       <b-tab-item label="Totals">
         <b-table
           :data="transactions"
-          :row-class="(row, index) => row.isSold && 'is-disabled'"
+          :row-class="(row, index) => 'is-disabled'"
         >
           <template slot-scope="props">
             <b-table-column field="purchaseDate" label="Purchase Date">
@@ -143,6 +143,11 @@ export default class TransactionsComponent extends Vue {
 
   async getMyStocks() {
     this.transactions = await this.apiClient.GetTransactionSummaries();
+    const total = new TransactionSummaryViewModel();
+    total.summarise(this.transactions);
+    console.log(total);
+
+    this.transactions.push(total);
   }
 }
 </script>
