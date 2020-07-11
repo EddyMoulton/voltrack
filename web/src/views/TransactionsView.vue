@@ -3,10 +3,10 @@
 </template>
 
 <script>
-import TransactionsComponent from "../components/TransactionsComponent.vue";
+import TransactionsComponent from '../components/TransactionsComponent.vue';
 
 export default {
-  name: "Home",
+  name: 'Home',
   components: { TransactionsComponent },
   data() {
     return {

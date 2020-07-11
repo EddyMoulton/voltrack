@@ -9,7 +9,7 @@
         >
           <template slot-scope="props">
             <b-table-column field="purchaseDate" label="Purchase Date">
-              {{ props.row.purchaseDate | formatDate("DD/MM/YYYY") }}
+              {{ props.row.purchaseDate | formatDate('DD/MM/YYYY') }}
             </b-table-column>
 
             <b-table-column field="code" label="Stock Code">
@@ -46,7 +46,7 @@
         >
           <template slot-scope="props">
             <b-table-column field="purchaseDate" label="Purchase Date">
-              {{ props.row.purchaseDate | formatDate("DD/MM/YYYY") }}
+              {{ props.row.purchaseDate | formatDate('DD/MM/YYYY') }}
             </b-table-column>
 
             <b-table-column field="code" label="Stock Code">
@@ -83,7 +83,7 @@
         >
           <template slot-scope="props">
             <b-table-column field="purchaseDate" label="Purchase Date">
-              {{ props.row.purchaseDate | formatDate("DD/MM/YYYY") }}
+              {{ props.row.purchaseDate | formatDate('DD/MM/YYYY') }}
             </b-table-column>
 
             <b-table-column field="code" label="Stock Code">
@@ -116,13 +116,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { TransactionSummaryViewModel } from "../models/TransactionSummaryViewModel";
-import { ApiClient } from "../api/apiClient";
-import formatDate from "../filters/FormatDateFilter";
+import { Component, Vue } from 'vue-property-decorator';
+import { TransactionSummaryViewModel } from '../models/TransactionSummaryViewModel';
+import { ApiClient } from '../api/apiClient';
+import formatDate from '../filters/FormatDateFilter';
 
 @Component({
-  name: "TransactionsComponent",
+  name: 'TransactionsComponent',
   filters: {
     formatDate
   }
@@ -134,7 +134,7 @@ export default class TransactionsComponent extends Vue {
 
   constructor() {
     super();
-    this.apiClient = new ApiClient("http://localhost:3000/api");
+    this.apiClient = new ApiClient('http://localhost:3000/api');
   }
 
   mounted() {

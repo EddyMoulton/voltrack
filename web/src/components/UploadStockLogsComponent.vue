@@ -27,21 +27,20 @@
         ></button>
       </span>
     </div>
-    <b-button type="is-primary" @click="add" :disabled="actionInProgress">
+    <b-button type="is-primary" :disabled="actionInProgress" @click="add">
       Add
     </b-button>
   </section>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
-import { StockLogViewModel } from "../models/StockLogViewModel";
-import { ApiClient } from "../api/apiClient";
-import formatDate from "../filters/FormatDateFilter";
-import Papa from "papaparse";
+import { Component, Vue, Watch } from 'vue-property-decorator';
+import { StockLogViewModel } from '../models/StockLogViewModel';
+import { ApiClient } from '../api/apiClient';
+import Papa from 'papaparse';
 
 @Component({
-  name: "UploadStockLogsComponent"
+  name: 'UploadStockLogsComponent'
 })
 export default class UploadStockLogsComponent extends Vue {
   private dropFiles: File[] = [];
@@ -51,22 +50,22 @@ export default class UploadStockLogsComponent extends Vue {
 
   constructor() {
     super();
-    this.apiClient = new ApiClient("http://localhost:3000/api");
+    this.apiClient = new ApiClient('http://localhost:3000/api');
   }
 
   deleteDropFile(index: number) {
     this.dropFiles.splice(index, 1);
   }
 
-  @Watch("dropFiles")
+  @Watch('dropFiles')
   onDropFilesChanged(value: File[]) {
     this.fileData = [];
 
-    value.forEach((file, index) => {
+    value.forEach((file) => {
       Papa.parse(file, {
         header: true,
         dynamicTyping: true,
-        complete: result => {
+        complete: (result) => {
           if (result) {
             this.fileData.push(...(result.data as StockLogViewModel[]));
           }
@@ -81,17 +80,18 @@ export default class UploadStockLogsComponent extends Vue {
       try {
         const result = await this.apiClient.AddStockLogs(this.fileData);
         this.dropFiles = [];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this.$parent as any).close();
         this.$buefy.toast.open({
-          message: "Added " + result.data.addedEntries + " logs",
-          type: "is-success"
+          message: 'Added ' + result.data.addedEntries + ' logs',
+          type: 'is-success'
         });
       } catch (e) {
         this.$buefy.toast.open({
-          message: "Failed to add logs",
-          type: "is-danger"
+          message: 'Failed to add logs',
+          type: 'is-danger'
         });
-        console.error("Failed to add logs");
+        console.error('Failed to add logs');
         console.error(e);
       } finally {
         this.actionInProgress = false;

@@ -27,21 +27,21 @@
         ></button>
       </span>
     </div>
-    <b-button type="is-primary" @click="add" :disabled="actionInProgress">
+    <b-button type="is-primary" :disabled="actionInProgress" @click="add">
       Add
     </b-button>
   </section>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
-import { ApiClient } from "../api/apiClient";
-import Papa from "papaparse";
-import { AddTransactionDto } from "../api/models/AddTransactionDto";
-import { IClosable } from "../interfaces/IClosable";
+import { Component, Vue, Watch } from 'vue-property-decorator';
+import { ApiClient } from '../api/apiClient';
+import Papa from 'papaparse';
+import { AddTransactionDto } from '../api/models/AddTransactionDto';
+import { IClosable } from '../interfaces/IClosable';
 
 @Component({
-  name: "UploadTransactionsComponent"
+  name: 'UploadTransactionsComponent'
 })
 export default class UploadTransactionsComponent extends Vue {
   private dropFiles: File[] = [];
@@ -51,22 +51,22 @@ export default class UploadTransactionsComponent extends Vue {
 
   constructor() {
     super();
-    this.apiClient = new ApiClient("http://localhost:3000/api");
+    this.apiClient = new ApiClient('http://localhost:3000/api');
   }
 
   deleteDropFile(index: number) {
     this.dropFiles.splice(index, 1);
   }
 
-  @Watch("dropFiles")
+  @Watch('dropFiles')
   onDropFilesChanged(value: File[]) {
     this.fileData = [];
 
-    value.forEach(file => {
+    value.forEach((file) => {
       Papa.parse(file, {
         header: true,
         dynamicTyping: true,
-        complete: result => {
+        complete: (result) => {
           if (result) {
             this.fileData.push(...(result.data as AddTransactionDto[]));
           }
@@ -83,15 +83,15 @@ export default class UploadTransactionsComponent extends Vue {
         this.dropFiles = [];
         ((this.$parent as unknown) as IClosable).close();
         this.$buefy.toast.open({
-          message: "Added " + result.data.addedEntries + " transactions",
-          type: "is-success"
+          message: 'Added ' + result.data.addedEntries + ' transactions',
+          type: 'is-success'
         });
       } catch (e) {
         this.$buefy.toast.open({
-          message: "Failed to add transactions",
-          type: "is-danger"
+          message: 'Failed to add transactions',
+          type: 'is-danger'
         });
-        console.error("Failed to add transactions");
+        console.error('Failed to add transactions');
         console.error(e);
       } finally {
         this.actionInProgress = false;

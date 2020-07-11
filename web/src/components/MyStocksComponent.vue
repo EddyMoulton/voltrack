@@ -24,10 +24,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { TransactionSummaryViewModel } from "../models/TransactionSummaryViewModel";
-import { OwnedStockViewModel } from "../models/OwnedStockViewModel";
-import { ApiClient } from "../api/apiClient";
+import { Component, Vue } from 'vue-property-decorator';
+import { OwnedStockViewModel } from '../models/OwnedStockViewModel';
+import { ApiClient } from '../api/apiClient';
 
 @Component
 export default class MyStocksComponent extends Vue {
@@ -37,7 +36,7 @@ export default class MyStocksComponent extends Vue {
 
   constructor() {
     super();
-    this.apiClient = new ApiClient("http://localhost:3000/api");
+    this.apiClient = new ApiClient('http://localhost:3000/api');
   }
 
   mounted() {
@@ -50,5 +49,4 @@ export default class MyStocksComponent extends Vue {
 }
 </script>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>

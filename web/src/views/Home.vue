@@ -50,13 +50,13 @@
 <script>
 // @ is an alias to /src
 
-import MyStocksComponent from "../components/MyStocksComponent.vue";
-import AddTransactionComponent from "../components/AddTransactionComponent.vue";
-import UploadStockLogsComponent from "../components/UploadStockLogsComponent.vue";
-import UploadTransactionsComponent from "../components/UploadTransactionsComponent.vue";
+import MyStocksComponent from '../components/MyStocksComponent.vue';
+import AddTransactionComponent from '../components/AddTransactionComponent.vue';
+import UploadStockLogsComponent from '../components/UploadStockLogsComponent.vue';
+import UploadTransactionsComponent from '../components/UploadTransactionsComponent.vue';
 
 export default {
-  name: "Home",
+  name: 'Home',
   components: {
     AddTransactionComponent,
     MyStocksComponent,

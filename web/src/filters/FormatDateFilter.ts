@@ -7,6 +7,6 @@ export default Vue.filter('formatDate', function (value: Date, format = '') {
       format = 'DD/MM/YYYY hh:mm';
     }
 
-    return moment(String(value)).format(format)
+    return moment(String(value)).format(format);
   }
-})
+});

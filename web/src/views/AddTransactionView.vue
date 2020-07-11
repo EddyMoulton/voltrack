@@ -5,10 +5,10 @@
 </template>
 
 <script>
-import AddTransactionComponent from "../components/AddTransactionComponent.vue";
+import AddTransactionComponent from '../components/AddTransactionComponent.vue';
 
 export default {
-  name: "AddTransactionView",
+  name: 'AddTransactionView',
   components: { AddTransactionComponent }
 };
 </script>

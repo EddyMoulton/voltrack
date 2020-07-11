@@ -3,6 +3,6 @@ export class AddTransactionDto {
   public date = new Date();
   public cost = 0;
   public fee = 0;
-  public stockCode = "";
+  public stockCode = '';
   public quantity = 0;
 }
