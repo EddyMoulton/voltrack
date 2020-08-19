@@ -64,6 +64,7 @@ func main() {
 	api.POST("/stocks/transactions/bulk", transactionsAPI.UploadTransactionHistory)
 	api.GET("/stocks", stocksAPI.GetAll)
 	api.GET("/stocks/current", transactionsAPI.GetCurrentStocks)
+	api.GET("/stocks/logs", stocksAPI.GetStockHistory)
 	api.POST("/stocks/logs", stocksAPI.UploadStockHistory)
 
 	go gocron.Start()

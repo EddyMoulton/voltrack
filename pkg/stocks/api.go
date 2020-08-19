@@ -88,3 +88,23 @@ func (a *API) UploadStockHistory(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"addedEntries": count})
 	return
 }
+
+// GetStockHistory returns historical stock data
+func (a *API) GetStockHistory(c *gin.Context) {
+	var data GetStockLogsDto
+
+	if err := c.ShouldBindJSON(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	stockLogs, err := a.service.GetStockLogs(data.StockCodes, data.Start, data.End)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"logs": stockLogs})
+	return
+}
