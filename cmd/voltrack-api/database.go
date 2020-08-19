@@ -51,7 +51,7 @@ func InitializeDatabase() *gorm.DB {
 		log.Fatal(err)
 		log.Fatal("Could not connect database")
 	}
-	1231
+
 	db.AutoMigrate(&transactions.StockTransaction{},
 		&transactions.Transaction{},
 		&stocks.Stock{},
