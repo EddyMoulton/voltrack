@@ -30,7 +30,7 @@ version=$(cat VERSION)
 echo "version: $version"
 
 # Run build
-build/build.sh --environment "$env" --target "$target"
+build.sh --environment "$env" --target "$target"
 
 # Tag in git
 git add -A
@@ -41,16 +41,16 @@ git tag -a "$version" -m "version $version"
 #git push
 #git push --tags
 
-if [ "$target" = "all" ] || [ "$target" = "api" ]; then
-  docker tag $REGISTRY/$IMAGE_API:latest $REGISTRY/$IMAGE_API:$version
-  docker push $REGISTRY/$IMAGE_API:latest
-  docker push $REGISTRY/$IMAGE_API:$version
-fi
+#if [ "$target" = "all" ] || [ "$target" = "api" ]; then
+#  docker tag $REGISTRY/$IMAGE_API:latest $REGISTRY/$IMAGE_API:$version
+#  docker push $REGISTRY/$IMAGE_API:latest
+#  docker push $REGISTRY/$IMAGE_API:$version
+#fi
 
-if [ "$target" = "all" ] || [ "$target" = "web" ]; then
-  docker tag $REGISTRY/$IMAGE_WEB:latest $REGISTRY/$IMAGE_WEB:$version
-  docker push $REGISTRY/$IMAGE_WEB:latest
-  docker push $REGISTRY/$IMAGE_WEB:$version
-fi
+#if [ "$target" = "all" ] || [ "$target" = "web" ]; then
+#  docker tag $REGISTRY/$IMAGE_WEB:latest $REGISTRY/$IMAGE_WEB:$version
+#  docker push $REGISTRY/$IMAGE_WEB:latest
+#  docker push $REGISTRY/$IMAGE_WEB:$version
+#fi
 
 cd -
