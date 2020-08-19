@@ -1,6 +1,11 @@
 #!/bin/bash
 
-script_directory=$(dirname ${BASH_SOURCE[0]})
+if [[ -n $(git status -s) ]]; then
+  echo "Uncommitted changes: Ensure all changes are committed before releasing"
+  exit 1
+fi
+
+script_directory=$(dirname $(realpath -s $0))
 src_directory=$(dirname "$script_directory")
 
 source $script_directory/common.sh
@@ -24,13 +29,13 @@ fi
 cd $src_directory
 
 # Increment version
-current_version=$(cat VERSION)
-echo $current_version | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF+1)%(10^length($NF))); print}' >VERSION
-version=$(cat VERSION)
+current_version=$(cat build/VERSION)
+echo $current_version | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF+1)%(10^length($NF))); print}' >build/VERSION
+version=$(cat build/VERSION)
 echo "version: $version"
 
 # Run build
-build/build.sh --environment "$env" --target "$target"
+./build/build.sh --environment "$env" --target "$target"
 
 # Tag in git
 git add -A
@@ -38,8 +43,8 @@ git commit -m "version $version"
 git tag -a "$version" -m "version $version"
 
 # Push to remote - disabled due to permissions
-#git push
-#git push --tags
+git push
+git push --tags
 
 if [ "$target" = "all" ] || [ "$target" = "api" ]; then
   docker tag $REGISTRY/$IMAGE_API:latest $REGISTRY/$IMAGE_API:$version
