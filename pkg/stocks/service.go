@@ -133,3 +133,11 @@ func (s *Service) AddStockLogs(data []StockLogDto) (int, error) {
 func (s *Service) GetLatestStockLog(stockCode string) (StockLog, error) {
 	return s.repository.GetLatestStockLog(stockCode)
 }
+
+func (s *Service) GetStockLogs(stockCodes []string, start, end time.Time) ([]StockLog, error) {
+	if (end == time.Time{}) {
+		end = time.Unix(1<<63-62135596801, 999999999)
+	}
+
+	return s.repository.GetStockLogs(stockCodes, start, end)
+}
