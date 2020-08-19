@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ -z $(git status -s) ]]; then
+  echo "Uncommited changes: Ensure all changes are committed before releasing"
+  return
+fi
+
 script_directory=$(dirname $(realpath -s $0))
 src_directory=$(dirname "$script_directory")
 
