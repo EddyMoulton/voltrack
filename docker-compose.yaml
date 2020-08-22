@@ -6,7 +6,7 @@ services:
       DB_HOST: "10.1.1.8"
       DB_PORT: "5434"
       DB_PASSWORD: "password"
-      ENV_DEVELOPMENT: "true"
+      ENV: "Development"
     build:
       context: ./
       dockerfile: build/dockerfile.api.development

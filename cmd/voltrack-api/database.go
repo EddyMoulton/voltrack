@@ -39,13 +39,14 @@ func InitializeDatabase() *gorm.DB {
 		dbPassword = "password"
 	}
 
-	devMode := ""
-	_, exists = os.LookupEnv("ENV_DEVELOPMENT")
-	if exists {
-		devMode = "sslmode=disable"
+	disableSsl := ""
+	env, envExists := os.LookupEnv("ENV")
+	_, disableSslExists := os.LookupEnv("DB_DISABLE_SSL")
+	if disableSslExists || (envExists && env == "Development") {
+		disableSsl = "sslmode=disable"
 	}
 
-	db, err := gorm.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s %s", dbHost, dbPort, dbUsername, dbName, dbPassword, devMode))
+	db, err := gorm.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s %s", dbHost, dbPort, dbUsername, dbName, dbPassword, disableSsl))
 
 	if err != nil {
 		log.Fatal(err)
