@@ -9,6 +9,9 @@ env=""
 parse_args() {
   while test $# -gt 0; do
     case "$1" in
+    --skip-commit)
+      skipCommitCheck=true
+      ;;
     -t) ;&
     --target)
       case "$2" in
