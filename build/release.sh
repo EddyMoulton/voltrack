@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if ! command -v realpath &> /dev/null
+then
+    echo "realpath could not be found and is required (can be found in coreutils package)"
+    exit 1
+fi
+
 script_directory=$(dirname $(realpath -s $0))
 src_directory=$(dirname "$script_directory")
 

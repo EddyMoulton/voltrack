@@ -1,3 +1,5 @@
+#!/bin/bash
+
 REGISTRY=registry.emoult.com
 IMAGE_API=voltrack-api
 IMAGE_WEB=voltrack-web
@@ -12,8 +14,7 @@ parse_args() {
     --skip-commit)
       skipCommitCheck=true
       ;;
-    -t) ;&
-    --target)
+    -t | --target)
       case "$2" in
       all)
         target="all"
@@ -31,17 +32,12 @@ parse_args() {
       esac
       shift
       ;;
-    -e) ;&
-    --env) ;&
-    --environment)
+    -e | --env | --environment)
       case "$2" in
-      dev) ;&
-
-      development)
+      dev | development)
         env="development"
         ;;
-      prod) ;&
-      production)
+      prod | production)
         env="production"
         ;;
       *)
@@ -51,8 +47,7 @@ parse_args() {
       esac
       shift
       ;;
-    -h) ;&
-    --help)
+    -h | --help)
       echo "Usage:"
       echo "    ./build.sh [options]"
       echo
