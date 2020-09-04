@@ -3,7 +3,7 @@ services:
   api:
     container_name: voltrack_api
     environment:
-      DB_HOST: "10.1.1.8"
+      DB_HOST: "10.1.1.20"
       DB_PORT: "5434"
       DB_PASSWORD: "password"
       ENV: "Development"

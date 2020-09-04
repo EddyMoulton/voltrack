@@ -124,8 +124,8 @@ import formatDate from '../filters/FormatDateFilter';
 @Component({
   name: 'TransactionsComponent',
   filters: {
-    formatDate
-  }
+    formatDate,
+  },
 })
 export default class TransactionsComponent extends Vue {
   private transactions: TransactionSummaryViewModel[] = [];
@@ -134,7 +134,7 @@ export default class TransactionsComponent extends Vue {
 
   constructor() {
     super();
-    this.apiClient = new ApiClient('http://localhost:3000/api');
+    this.apiClient = new ApiClient();
   }
 
   mounted() {

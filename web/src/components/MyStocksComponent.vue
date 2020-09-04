@@ -18,8 +18,8 @@
         <b-table-column field="difference" label="Difference">
           ${{ parseFloat(props.row.difference).toFixed(2) }}
         </b-table-column>
-      </template></b-table
-    >
+      </template>
+    </b-table>
   </div>
 </template>
 
@@ -36,7 +36,7 @@ export default class MyStocksComponent extends Vue {
 
   constructor() {
     super();
-    this.apiClient = new ApiClient('http://localhost:3000/api');
+    this.apiClient = new ApiClient();
   }
 
   mounted() {

@@ -9,6 +9,6 @@ import AddTransactionComponent from '../components/AddTransactionComponent.vue';
 
 export default {
   name: 'AddTransactionView',
-  components: { AddTransactionComponent }
+  components: { AddTransactionComponent },
 };
 </script>

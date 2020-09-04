@@ -8,7 +8,7 @@ export class StockChangeViewModel {
     value?: number,
     simpleReturn?: number,
     annualReturn?: number,
-    scaledAnnualReturn?: number
+    scaledAnnualReturn?: number,
   ) {
     this.value = value || 0;
     this.simpleReturn = simpleReturn || 0;
@@ -21,7 +21,7 @@ export class StockChangeViewModel {
     baseValue: number,
     yearsHeld: number,
     scaleBase?: number,
-    returnBaseValue?: number
+    returnBaseValue?: number,
   ) {
     if (!returnBaseValue) {
       returnBaseValue = baseValue;

@@ -1,5 +1,7 @@
 <template>
-  <div><transactions-component></transactions-component></div>
+  <div>
+    <transactions-component></transactions-component>
+  </div>
 </template>
 
 <script>
@@ -10,8 +12,8 @@ export default {
   components: { TransactionsComponent },
   data() {
     return {
-      isModalActive: false
+      isModalActive: false,
     };
-  }
+  },
 };
 </script>

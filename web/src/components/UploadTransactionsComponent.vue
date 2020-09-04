@@ -5,7 +5,7 @@
         <section class="section">
           <div class="content has-text-centered">
             <p>
-              <b-icon icon="upload" size="is-large"> </b-icon>
+              <b-icon icon="upload" size="is-large"></b-icon>
             </p>
             <p>Drop your files here or click to upload</p>
           </div>
@@ -41,7 +41,7 @@ import { AddTransactionDto } from '../api/models/AddTransactionDto';
 import { IClosable } from '../interfaces/IClosable';
 
 @Component({
-  name: 'UploadTransactionsComponent'
+  name: 'UploadTransactionsComponent',
 })
 export default class UploadTransactionsComponent extends Vue {
   private dropFiles: File[] = [];
@@ -51,7 +51,7 @@ export default class UploadTransactionsComponent extends Vue {
 
   constructor() {
     super();
-    this.apiClient = new ApiClient('http://localhost:3000/api');
+    this.apiClient = new ApiClient();
   }
 
   deleteDropFile(index: number) {
@@ -70,7 +70,7 @@ export default class UploadTransactionsComponent extends Vue {
           if (result) {
             this.fileData.push(...(result.data as AddTransactionDto[]));
           }
-        }
+        },
       });
     });
   }
@@ -84,12 +84,12 @@ export default class UploadTransactionsComponent extends Vue {
         ((this.$parent as unknown) as IClosable).close();
         this.$buefy.toast.open({
           message: 'Added ' + result.data.addedEntries + ' transactions',
-          type: 'is-success'
+          type: 'is-success',
         });
       } catch (e) {
         this.$buefy.toast.open({
           message: 'Failed to add transactions',
-          type: 'is-danger'
+          type: 'is-danger',
         });
         console.error('Failed to add transactions');
         console.error(e);

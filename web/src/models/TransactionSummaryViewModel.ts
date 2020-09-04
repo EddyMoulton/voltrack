@@ -14,7 +14,7 @@ export class TransactionSummaryViewModel {
     quantity?: number,
     captial?: StockChangeViewModel,
     dividends?: StockChangeViewModel,
-    total?: StockChangeViewModel
+    total?: StockChangeViewModel,
   ) {
     this.code = code || '';
     this.purchaseDate = purchaseDate;
@@ -31,7 +31,7 @@ export class TransactionSummaryViewModel {
     currentValue: number,
     dividendValue: number,
     purchaseDate: Date,
-    totalCostValue?: number
+    totalCostValue?: number,
   ) {
     this.code = code;
     this.quantity = quantity;
@@ -47,13 +47,13 @@ export class TransactionSummaryViewModel {
       0,
       yearsHeld,
       totalCostValue,
-      costValue
+      costValue,
     );
     this.total.generate(
       currentValue + dividendValue,
       costValue,
       yearsHeld,
-      totalCostValue
+      totalCostValue,
     );
   }
 
@@ -61,15 +61,15 @@ export class TransactionSummaryViewModel {
     this.code = 'Total';
     this.capital = new StockChangeViewModel();
     this.capital.sumarise(
-      transactions.map((t: TransactionSummaryViewModel) => t.capital)
+      transactions.map((t: TransactionSummaryViewModel) => t.capital),
     );
     this.dividends = new StockChangeViewModel();
     this.dividends.sumarise(
-      transactions.map((t: TransactionSummaryViewModel) => t.dividends)
+      transactions.map((t: TransactionSummaryViewModel) => t.dividends),
     );
     this.total = new StockChangeViewModel();
     this.total.sumarise(
-      transactions.map((t: TransactionSummaryViewModel) => t.total)
+      transactions.map((t: TransactionSummaryViewModel) => t.total),
     );
   }
 }

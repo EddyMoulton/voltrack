@@ -5,7 +5,7 @@
         <section class="section">
           <div class="content has-text-centered">
             <p>
-              <b-icon icon="upload" size="is-large"> </b-icon>
+              <b-icon icon="upload" size="is-large"></b-icon>
             </p>
             <p>Drop your files here or click to upload</p>
           </div>
@@ -40,7 +40,7 @@ import { ApiClient } from '../api/apiClient';
 import Papa from 'papaparse';
 
 @Component({
-  name: 'UploadStockLogsComponent'
+  name: 'UploadStockLogsComponent',
 })
 export default class UploadStockLogsComponent extends Vue {
   private dropFiles: File[] = [];
@@ -50,7 +50,7 @@ export default class UploadStockLogsComponent extends Vue {
 
   constructor() {
     super();
-    this.apiClient = new ApiClient('http://localhost:3000/api');
+    this.apiClient = new ApiClient();
   }
 
   deleteDropFile(index: number) {
@@ -69,7 +69,7 @@ export default class UploadStockLogsComponent extends Vue {
           if (result) {
             this.fileData.push(...(result.data as StockLogViewModel[]));
           }
-        }
+        },
       });
     });
   }
@@ -84,12 +84,12 @@ export default class UploadStockLogsComponent extends Vue {
         (this.$parent as any).close();
         this.$buefy.toast.open({
           message: 'Added ' + result.data.addedEntries + ' logs',
-          type: 'is-success'
+          type: 'is-success',
         });
       } catch (e) {
         this.$buefy.toast.open({
           message: 'Failed to add logs',
-          type: 'is-danger'
+          type: 'is-danger',
         });
         console.error('Failed to add logs');
         console.error(e);

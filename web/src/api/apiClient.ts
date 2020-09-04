@@ -19,8 +19,9 @@ export class ApiClient {
   private axios: AxiosInstance;
   private baseUrl: string;
 
-  constructor(baseUrl: string, axiosConfig?: AxiosRequestConfig | undefined) {
-    this.baseUrl = baseUrl.replace(/\/$/, ''); // Ensure no trailing slash
+  constructor(baseUrl?: string, axiosConfig?: AxiosRequestConfig | undefined) {
+    this.baseUrl = baseUrl || process.env.VUE_APP_API_URL || '';
+    this.baseUrl = this.baseUrl.replace(/\/$/, ''); // Ensure no trailing slash
 
     if (!axiosConfig) {
       axiosConfig = {};
@@ -32,8 +33,8 @@ export class ApiClient {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers':
           'access-control-allow-origin, access-control-allow-headers',
-        'Content-Type': 'text/plain'
-      }
+        'Content-Type': 'text/plain',
+      },
     };
 
     this.axios = axios.create(axiosConfig);
@@ -72,7 +73,7 @@ export class ApiClient {
     });
 
     return this.axios.post(this.baseUrl + this.addTransactionsUrl, {
-      transactions: data
+      transactions: data,
     });
   }
 
@@ -105,7 +106,7 @@ export class ApiClient {
     TransactionSummaryViewModel[]
   > {
     const result = await this.axios.get(
-      this.baseUrl + this.getTransactionSummariesUrl
+      this.baseUrl + this.getTransactionSummariesUrl,
     );
 
     const totalCost = result.data.transactions
@@ -123,7 +124,7 @@ export class ApiClient {
         ((t.value || 0) * (t.quantity || 0)) / 10000,
         (t.dividendValue || 0) / 10000,
         new Date(t.date || 0),
-        totalCost / 10000
+        totalCost / 10000,
       );
       return viewModel;
     });

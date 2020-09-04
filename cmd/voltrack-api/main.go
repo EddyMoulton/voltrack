@@ -47,7 +47,7 @@ func main() {
 	router.Use(static.Serve("/", static.LocalFile("./views", true)))
 	router.Use(cors.Default())
 
-	api := router.Group("/api")
+	api := router.Group("/")
 	{
 		api.GET("/", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{

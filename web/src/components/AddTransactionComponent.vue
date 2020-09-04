@@ -1,12 +1,8 @@
 <template>
   <div>
     <div class="block">
-      <b-radio v-model="action" name="action" native-value="buy">
-        Buy
-      </b-radio>
-      <b-radio v-model="action" name="action" native-value="sell">
-        Sell
-      </b-radio>
+      <b-radio v-model="action" name="action" native-value="buy">Buy</b-radio>
+      <b-radio v-model="action" name="action" native-value="sell">Sell</b-radio>
     </div>
     <b-field label="Code">
       <b-input v-model="code"></b-input>
@@ -17,8 +13,7 @@
         v-model="date"
         expanded
         placeholder="Select a date"
-      >
-      </b-datepicker>
+      ></b-datepicker>
       <b-button
         icon-left="calendar-today"
         type="is-primary"
@@ -62,7 +57,7 @@ export default class AddTransactionComponent extends Vue {
 
   constructor() {
     super();
-    this.apiClient = new ApiClient('http://localhost:3000/api');
+    this.apiClient = new ApiClient();
   }
 
   clearForm() {
@@ -100,7 +95,7 @@ export default class AddTransactionComponent extends Vue {
     } catch (e) {
       this.$buefy.toast.open({
         message: 'Failed to add transaction',
-        type: 'is-danger'
+        type: 'is-danger',
       });
       console.error('Failed to add transaction');
       console.error(e);

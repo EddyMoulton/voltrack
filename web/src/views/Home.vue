@@ -61,14 +61,14 @@ export default {
     AddTransactionComponent,
     MyStocksComponent,
     UploadStockLogsComponent,
-    UploadTransactionsComponent
+    UploadTransactionsComponent,
   },
   data() {
     return {
       isModalActive: false,
       isUploadLogsModalActive: false,
-      isUploadTranscationsModalActive: false
+      isUploadTranscationsModalActive: false,
     };
-  }
+  },
 };
 </script>
